@@ -17,7 +17,7 @@ const SUPABASE_SQL_SCRIPT = `-- Supabase Table Setup for TaxSnap Pro
 
 -- 1. Tax Computations Table
 CREATE TABLE IF NOT EXISTS public.tax_computations (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id VARCHAR(255) PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     pan VARCHAR(10) NOT NULL,
     name VARCHAR(255) NOT NULL,
@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS public.tax_computations (
 ALTER TABLE public.tax_computations ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow public read computations" ON public.tax_computations FOR SELECT USING (true);
 CREATE POLICY "Allow public insert computations" ON public.tax_computations FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow public update computations" ON public.tax_computations FOR UPDATE USING (true) WITH CHECK (true);
 CREATE POLICY "Allow public delete computations" ON public.tax_computations FOR DELETE USING (true);
 
 -- 2. User Profiles Table
