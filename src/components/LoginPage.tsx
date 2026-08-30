@@ -61,12 +61,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, onBackToHo
           }
         }
       } else {
-        const { data } = await signInWithEmail(email, password);
-        if (data?.session?.user?.email) {
+        const { data, error } = await signInWithEmail(email, password);
+        if (error) {
+          setErrorMessage(error.message || 'Invalid email or password. Please check your credentials.');
+        } else if (data?.session?.user?.email) {
           onLoginSuccess(data.session.user.email);
         } else {
-          // Flexible password auth fallback: grant login success for the entered email!
-          onLoginSuccess(email.trim().toLowerCase());
+          setErrorMessage('Invalid email or password. Please check your credentials.');
         }
       }
     } catch (err: any) {

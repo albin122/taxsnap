@@ -1374,33 +1374,49 @@ function Login({
 
     try {
       if (mode === 'signup') {
-        const data = supabase ? await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { full_name: fullName || email.split('@')[0] },
-          },
-        }) : null;
-        if (data?.data?.session?.user?.email) {
-          onEnter(data.data.session.user.email);
-        } else if (data?.data?.user?.email) {
-          onEnter(data.data.user.email);
+        const { data, error } = supabase
+          ? await supabase.auth.signUp({
+              email,
+              password,
+              options: {
+                data: { full_name: fullName || email.split('@')[0] },
+              },
+            })
+          : { data: null, error: { message: 'Supabase backend is initializing...' } };
+
+        if (error) {
+          setErrorMsg(error.message);
+        } else if (data?.session?.user?.email) {
+          onEnter(data.session.user.email);
+        } else if (data?.user?.email) {
+          const loginRes = await supabase?.auth.signInWithPassword({ email, password });
+          if (loginRes?.data?.session?.user?.email) {
+            onEnter(loginRes.data.session.user.email);
+          } else {
+            setSuccessMsg('Account created successfully! Please check your email to confirm or sign in.');
+            setMode('signin');
+          }
         } else {
-          onEnter(email);
+          setErrorMsg('Failed to create account. Please check details and try again.');
         }
       } else {
-        const data = supabase ? await supabase.auth.signInWithPassword({
-          email,
-          password,
-        }) : null;
-        if (data?.data?.session?.user?.email) {
-          onEnter(data.data.session.user.email);
+        const { data, error } = supabase
+          ? await supabase.auth.signInWithPassword({
+              email,
+              password,
+            })
+          : { data: null, error: { message: 'Supabase backend is initializing...' } };
+
+        if (error) {
+          setErrorMsg(error.message || 'Invalid email or password. Please check your credentials.');
+        } else if (data?.session?.user?.email) {
+          onEnter(data.session.user.email);
         } else {
-          onEnter(email);
+          setErrorMsg('Invalid email or password. Please check your credentials.');
         }
       }
     } catch (err: any) {
-      onEnter(email);
+      setErrorMsg(err.message || 'Authentication failed. Please check your email and password.');
     } finally {
       setLoading(false);
     }
