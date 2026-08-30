@@ -778,17 +778,17 @@ export default function App() {
                         </div>
 
                         <div className="grid gap-5 sm:grid-cols-2">
-                          <TextField label="Full Name" value={profile.name} onChange={(v) => setProfile({ ...profile, name: v })} placeholder="e.g. Ananya Krishnan" />
-                          <TextField label="Designation" value={profile.designation} onChange={(v) => setProfile({ ...profile, designation: v })} placeholder="e.g. Assistant Engineer" />
+                          <TextField label="Full Name" value={profile.name} onChange={(v) => setProfile({ ...profile, name: v })} placeholder="Full Name" />
+                          <TextField label="Designation" value={profile.designation} onChange={(v) => setProfile({ ...profile, designation: v })} placeholder="Designation" />
                         </div>
 
                         <div className="grid gap-5 sm:grid-cols-2">
-                          <TextField label="Office Name" value={profile.office_name} onChange={(v) => setProfile({ ...profile, office_name: v })} placeholder="e.g. O/o The Chief Engineer" />
+                          <TextField label="Office Name" value={profile.office_name} onChange={(v) => setProfile({ ...profile, office_name: v })} placeholder="Office Name" />
                           <TextField
                             label="PAN Number"
                             value={profile.pan}
                             onChange={(v) => setProfile({ ...profile, pan: v.toUpperCase() })}
-                            placeholder="e.g. ABCDE1234F"
+                            placeholder="ABCDE1234F"
                             uppercase
                             maxLength={10}
                             hint="Auto-collected from your profile"
@@ -1684,7 +1684,7 @@ function OnboardingScreen({
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="e.g. Albin Philip Gigi"
+                      placeholder="Full Name"
                       className="w-full rounded-xl border border-[#2dd4bf]/30 bg-[#071815]/75 py-2.5 pl-10 pr-3.5 text-sm text-white placeholder:text-teal-200/40 outline-none transition-all focus:border-[#2dd4bf] focus:ring-1 focus:ring-[#2dd4bf] shadow-xs"
                     />
                   </div>
@@ -1699,7 +1699,7 @@ function OnboardingScreen({
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="albinphilipgigi@gmail.com"
+                      placeholder="you@example.com"
                       className="w-full rounded-xl border border-[#2dd4bf]/30 bg-[#071815]/75 py-2.5 pl-10 pr-3.5 text-sm text-white placeholder:text-teal-200/40 outline-none transition-all focus:border-[#2dd4bf] focus:ring-1 focus:ring-[#2dd4bf] shadow-xs"
                     />
                   </div>
@@ -1747,7 +1747,7 @@ function OnboardingScreen({
                       required
                       value={schoolOffice}
                       onChange={(e) => setSchoolOffice(e.target.value)}
-                      placeholder="e.g. Govt HS School"
+                      placeholder="School / Office Name"
                       className="w-full rounded-xl border border-[#2dd4bf]/30 bg-[#071815]/75 py-2.5 pl-10 pr-3.5 text-sm text-white placeholder:text-teal-200/40 outline-none transition-all focus:border-[#2dd4bf] focus:ring-1 focus:ring-[#2dd4bf] shadow-xs"
                     />
                   </div>
@@ -1762,7 +1762,7 @@ function OnboardingScreen({
                       required
                       value={position}
                       onChange={(e) => setPosition(e.target.value)}
-                      placeholder="e.g. High School Teacher"
+                      placeholder="Position / Designation"
                       className="w-full rounded-xl border border-[#2dd4bf]/30 bg-[#071815]/75 py-2.5 pl-10 pr-3.5 text-sm text-white placeholder:text-teal-200/40 outline-none transition-all focus:border-[#2dd4bf] focus:ring-1 focus:ring-[#2dd4bf] shadow-xs"
                     />
                   </div>
@@ -1776,7 +1776,7 @@ function OnboardingScreen({
                   maxLength={10}
                   value={pan}
                   onChange={(e) => setPan(e.target.value.toUpperCase())}
-                  placeholder="e.g. ABCDE1234F"
+                  placeholder="ABCDE1234F"
                   className="w-full rounded-xl border border-[#2dd4bf]/30 bg-[#071815]/75 py-2.5 px-4 font-mono uppercase text-sm text-white placeholder:text-teal-200/40 outline-none transition-all focus:border-[#2dd4bf] focus:ring-1 focus:ring-[#2dd4bf] shadow-xs"
                 />
               </div>

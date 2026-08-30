@@ -55,7 +55,7 @@ export const Step1Profile: React.FC<Step1Props> = ({ profile, onChange, onNext }
             <input
               type="text"
               required
-              placeholder="e.g. Rajesh Kumar Sharma"
+              placeholder="Full Name"
               value={profile.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
               className="w-full pl-9 pr-4 py-3 rounded-xl border border-[#2dd4bf]/30 bg-[#071815]/70 text-xs font-medium text-white placeholder:text-teal-200/40 outline-none focus:border-[#2dd4bf] focus:ring-1 focus:ring-[#2dd4bf]"
@@ -75,7 +75,7 @@ export const Step1Profile: React.FC<Step1Props> = ({ profile, onChange, onNext }
             <input
               type="text"
               required
-              placeholder="e.g. Senior Section Officer / Manager"
+              placeholder="Designation"
               value={profile.designation}
               onChange={(e) => handleInputChange('designation', e.target.value)}
               className="w-full pl-9 pr-4 py-3 rounded-xl border border-[#2dd4bf]/30 bg-[#071815]/70 text-xs font-medium text-white placeholder:text-teal-200/40 outline-none focus:border-[#2dd4bf] focus:ring-1 focus:ring-[#2dd4bf]"
@@ -94,7 +94,7 @@ export const Step1Profile: React.FC<Step1Props> = ({ profile, onChange, onNext }
             </div>
             <input
               type="text"
-              placeholder="e.g. Finance Dept / Directorate"
+              placeholder="Office Name"
               value={profile.office_name}
               onChange={(e) => handleInputChange('office_name', e.target.value)}
               className="w-full pl-9 pr-4 py-3 rounded-xl border border-[#2dd4bf]/30 bg-[#071815]/70 text-xs font-medium text-white placeholder:text-teal-200/40 outline-none focus:border-[#2dd4bf] focus:ring-1 focus:ring-[#2dd4bf]"
