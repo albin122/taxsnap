@@ -1636,31 +1636,6 @@ function Login({
               </button>
             </div>
 
-            {/* Quick Profiles from Supabase */}
-            <div className="mt-4 pt-3 border-t border-[#2dd4bf]/20">
-              <p className="text-[0.65rem] font-semibold uppercase tracking-wider text-teal-200/60 mb-2 text-center">
-                Quick Access Profiles (Supabase)
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => onEnter('gigi09chirathalackal@gmail.com')}
-                  className="rounded-xl border border-emerald-400/30 bg-emerald-950/40 hover:bg-emerald-900/60 p-2.5 text-left text-xs transition-all cursor-pointer flex flex-col"
-                >
-                  <span className="font-bold text-emerald-300">Gigi Varughese</span>
-                  <span className="text-[0.65rem] text-teal-200/60 truncate">gigi09chirathalackal@gmail.com</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onEnter('albinphilipgigi@gmail.com')}
-                  className="rounded-xl border border-teal-400/30 bg-teal-950/40 hover:bg-teal-900/60 p-2.5 text-left text-xs transition-all cursor-pointer flex flex-col"
-                >
-                  <span className="font-bold text-teal-300">Albin Philip Gigi</span>
-                  <span className="text-[0.65rem] text-teal-200/60 truncate">albinphilipgigi@gmail.com</span>
-                </button>
-              </div>
-            </div>
-
             <p className="mt-6 text-center text-xs text-teal-200/70">
               {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
               <button
