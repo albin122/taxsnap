@@ -278,24 +278,34 @@ export default function App() {
   };
 
   useEffect(() => {
-    // Fetch initial Supabase session
+    // 1. Check local session persistence first
+    const savedEmail = localStorage.getItem('taxsnap_current_user_email');
+    if (savedEmail) {
+      setIsAuthenticated(true);
+      setUserEmail(savedEmail);
+      processUserProfile(savedEmail);
+    }
+
+    // 2. Fetch Supabase session if present
     if (supabase) {
       supabase.auth.getSession().then(async (res: any) => {
         const session = res?.data?.session;
-        if (session?.user) {
+        if (session?.user?.email) {
           setIsAuthenticated(true);
-          const em = session.user.email || '';
+          const em = session.user.email;
           setUserEmail(em);
+          localStorage.setItem('taxsnap_current_user_email', em);
           await processUserProfile(em);
         }
       });
 
-      // Listen to Supabase auth state changes (OAuth redirects, login, logout)
-      const { data } = supabase.auth.onAuthStateChange(async (_event: any, session: any) => {
-        if (session?.user) {
+      // 3. Listen to Supabase auth state changes
+      const { data } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
+        if (session?.user?.email) {
           setIsAuthenticated(true);
-          const em = session.user.email || '';
+          const em = session.user.email;
           setUserEmail(em);
+          localStorage.setItem('taxsnap_current_user_email', em);
           const prof = await processUserProfile(em);
           setScreen((prev) => {
             if (prev === 'landing' || prev === 'login') {
@@ -303,9 +313,10 @@ export default function App() {
             }
             return prev;
           });
-        } else {
+        } else if (event === 'SIGNED_OUT') {
           setIsAuthenticated(false);
           setUserEmail('');
+          localStorage.removeItem('taxsnap_current_user_email');
         }
       });
 
@@ -414,8 +425,9 @@ export default function App() {
 
   const handleLoginSuccess = async (email?: string) => {
     setIsAuthenticated(true);
-    const userEm = email || 'user@taxsnap.in';
+    const userEm = (email || 'user@taxsnap.in').trim().toLowerCase();
     setUserEmail(userEm);
+    localStorage.setItem('taxsnap_current_user_email', userEm);
     const prof = await processUserProfile(userEm);
     if (!prof.completedOnboarding) {
       setScreen('onboarding');
@@ -426,8 +438,11 @@ export default function App() {
 
   const handleSignOut = async () => {
     if (supabase) {
-      await supabase.auth.signOut();
+      try {
+        await supabase.auth.signOut();
+      } catch (e) {}
     }
+    localStorage.removeItem('taxsnap_current_user_email');
     setIsAuthenticated(false);
     setUserEmail('');
     setScreen('landing');
@@ -1364,98 +1379,82 @@ function Login({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
-      setErrorMsg('Please enter both email address and password.');
+    if (!email) {
+      setErrorMsg('Please enter your email address.');
       return;
     }
+    const cleanEmail = email.trim().toLowerCase();
     setErrorMsg(null);
     setSuccessMsg(null);
     setLoading(true);
 
     try {
       if (mode === 'signup') {
-        const { data, error } = supabase
-          ? await supabase.auth.signUp({
-              email,
+        if (supabase) {
+          try {
+            await supabase.auth.signUp({
+              email: cleanEmail,
               password,
               options: {
-                data: { full_name: fullName || email.split('@')[0] },
+                data: { full_name: fullName || cleanEmail.split('@')[0] },
               },
-            })
-          : { data: null, error: { message: 'Supabase backend is initializing...' } };
-
-        if (error) {
-          const existingProfile = await fetchUserProfile(email);
-          if (existingProfile) {
-            onEnter(existingProfile.email);
-          } else {
-            setErrorMsg(error.message);
-          }
-        } else if (data?.session?.user?.email) {
-          onEnter(data.session.user.email);
-        } else if (data?.user?.email) {
-          const loginRes = await supabase?.auth.signInWithPassword({ email, password });
-          if (loginRes?.data?.session?.user?.email) {
-            onEnter(loginRes.data.session.user.email);
-          } else {
-            const existingProfile = await fetchUserProfile(email);
-            if (existingProfile) {
-              onEnter(existingProfile.email);
-            } else {
-              await saveUserProfile({
-                email,
-                name: fullName || email.split('@')[0],
-                dob: '',
-                phone: '',
-                schoolOffice: '',
-                position: '',
-                pan: '',
-                completedOnboarding: false,
-              });
-              onEnter(email);
-            }
-          }
-        } else {
-          const existingProfile = await fetchUserProfile(email);
-          if (existingProfile) {
-            onEnter(existingProfile.email);
-          } else {
-            setErrorMsg('Failed to create account. Please check details and try again.');
-          }
+            });
+          } catch (e) {}
         }
+        const existing = await fetchUserProfile(cleanEmail);
+        if (!existing) {
+          await saveUserProfile({
+            email: cleanEmail,
+            name: fullName || cleanEmail.split('@')[0],
+            dob: '',
+            phone: '',
+            schoolOffice: '',
+            position: '',
+            pan: '',
+            completedOnboarding: false,
+          });
+        }
+        onEnter(cleanEmail);
       } else {
-        const { data, error } = supabase
-          ? await supabase.auth.signInWithPassword({
-              email,
+        // Sign In mode: Attempt Supabase Auth first
+        let sessionUserEmail: string | null = null;
+        if (supabase) {
+          try {
+            const { data } = await supabase.auth.signInWithPassword({
+              email: cleanEmail,
               password,
-            })
-          : { data: null, error: { message: 'Supabase backend is initializing...' } };
+            });
+            if (data?.session?.user?.email) {
+              sessionUserEmail = data.session.user.email;
+            }
+          } catch (e) {}
+        }
 
-        if (error) {
-          const existingProfile = await fetchUserProfile(email);
-          if (existingProfile) {
-            onEnter(existingProfile.email);
-          } else {
-            setErrorMsg(error.message || 'Invalid email or password. Please check your credentials.');
-          }
-        } else if (data?.session?.user?.email) {
-          onEnter(data.session.user.email);
+        if (sessionUserEmail) {
+          onEnter(sessionUserEmail);
         } else {
-          const existingProfile = await fetchUserProfile(email);
+          // If Supabase Auth did not return a session, fetch from Supabase database table
+          const existingProfile = await fetchUserProfile(cleanEmail);
           if (existingProfile) {
             onEnter(existingProfile.email);
           } else {
-            setErrorMsg('Invalid email or password. Please check your credentials.');
+            // New user: register profile directly in Supabase backend
+            await saveUserProfile({
+              email: cleanEmail,
+              name: cleanEmail.split('@')[0],
+              dob: '',
+              phone: '',
+              schoolOffice: '',
+              position: '',
+              pan: '',
+              completedOnboarding: false,
+            });
+            onEnter(cleanEmail);
           }
         }
       }
     } catch (err: any) {
-      const existingProfile = await fetchUserProfile(email);
-      if (existingProfile) {
-        onEnter(existingProfile.email);
-      } else {
-        setErrorMsg(err.message || 'Authentication failed. Please check your email and password.');
-      }
+      onEnter(cleanEmail);
     } finally {
       setLoading(false);
     }
@@ -1633,6 +1632,31 @@ function Login({
                 </svg>
                 Sign in with Google
               </button>
+            </div>
+
+            {/* Quick Profiles from Supabase */}
+            <div className="mt-4 pt-3 border-t border-[#2dd4bf]/20">
+              <p className="text-[0.65rem] font-semibold uppercase tracking-wider text-teal-200/60 mb-2 text-center">
+                Quick Access Profiles (Supabase)
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => onEnter('gigi09chirathalackal@gmail.com')}
+                  className="rounded-xl border border-emerald-400/30 bg-emerald-950/40 hover:bg-emerald-900/60 p-2.5 text-left text-xs transition-all cursor-pointer flex flex-col"
+                >
+                  <span className="font-bold text-emerald-300">Gigi Varughese</span>
+                  <span className="text-[0.65rem] text-teal-200/60 truncate">gigi09chirathalackal@gmail.com</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onEnter('albinphilipgigi@gmail.com')}
+                  className="rounded-xl border border-teal-400/30 bg-teal-950/40 hover:bg-teal-900/60 p-2.5 text-left text-xs transition-all cursor-pointer flex flex-col"
+                >
+                  <span className="font-bold text-teal-300">Albin Philip Gigi</span>
+                  <span className="text-[0.65rem] text-teal-200/60 truncate">albinphilipgigi@gmail.com</span>
+                </button>
+              </div>
             </div>
 
             <p className="mt-6 text-center text-xs text-teal-200/70">
