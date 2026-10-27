@@ -12,6 +12,7 @@
   "dependencies": {
     "@paper-design/shaders-react": "^0.0.80",
     "@supabase/supabase-js": "^2.112.4",
+    "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
     "framer-motion": "^13.1.1",
     "html2pdf.js": "^0.14.0",
