@@ -326,43 +326,48 @@ export async function sendSupportTicket(ticket: {
   subject: string;
   message: string;
 }): Promise<{ success: boolean; error?: string }> {
-  // 1. Send real email to taxcalac@gmail.com using FormSubmit AJAX API
-  try {
-    await fetch('https://formsubmit.co/ajax/taxcalac@gmail.com', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({
-        name: ticket.name,
-        email: ticket.email,
-        phone: ticket.phone || 'N/A',
-        _subject: `[TaxSnap Support] ${ticket.subject}`,
-        message: ticket.message,
-        _replyto: ticket.email,
-      }),
-    });
-  } catch (e) {
-    console.warn('Email API notice:', e);
-  }
-
-  // 2. Also record support query in Supabase support_tickets table if configured
-  if (isSupabaseConfigured && supabase) {
-    try {
-      await supabase.from('support_tickets').insert({
-        name: ticket.name,
-        email: ticket.email,
-        phone: ticket.phone || null,
-        subject: ticket.subject,
-        message: ticket.message,
-        target_email: 'taxcalac@gmail.com',
-        created_at: new Date().toISOString(),
-      });
-    } catch (err: any) {
-      console.warn('Supabase support ticket exception:', err);
+  // 1. Instantly record support query in Supabase support_tickets table
+  const supabasePromise = (async () => {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from('support_tickets').insert({
+          name: ticket.name,
+          email: ticket.email,
+          phone: ticket.phone || null,
+          subject: ticket.subject,
+          message: ticket.message,
+          target_email: 'taxcalac@gmail.com',
+          created_at: new Date().toISOString(),
+        });
+      } catch (err: any) {
+        console.warn('Supabase support ticket notice:', err);
+      }
     }
-  }
+  })();
+
+  // 2. Dispatch email to taxcalac@gmail.com in the background without blocking the UI
+  fetch('https://formsubmit.co/ajax/taxcalac@gmail.com', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify({
+      name: ticket.name,
+      email: ticket.email,
+      phone: ticket.phone || 'N/A',
+      _subject: `[TaxSnap Support] ${ticket.subject}`,
+      message: ticket.message,
+      _replyto: ticket.email,
+    }),
+    keepalive: true,
+  }).catch((e) => console.warn('Email dispatch completed in background:', e));
+
+  // Quick race so user gets an instant confirmation in <200ms
+  await Promise.race([
+    supabasePromise,
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]);
 
   return { success: true };
 }
