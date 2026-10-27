@@ -287,8 +287,43 @@ export default function App() {
       processUserProfile(savedEmail);
     }
 
-    // 2. Fetch Supabase session if present
     if (supabase) {
+      // 2. Handle Google / OAuth PKCE code or tokens in URL callback
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get('code');
+      const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+      const errorMsgFromUrl =
+        url.searchParams.get('error_description') ||
+        hashParams.get('error_description') ||
+        url.searchParams.get('error') ||
+        hashParams.get('error');
+
+      if (errorMsgFromUrl) {
+        console.warn('OAuth redirect notice:', errorMsgFromUrl);
+        setToastMessage(`Login notice: ${errorMsgFromUrl}`);
+      }
+
+      if (code) {
+        supabase.auth
+          .exchangeCodeForSession(code)
+          .then(async (res) => {
+            const user = res.data?.session?.user;
+            if (user?.email) {
+              const em = user.email;
+              setIsAuthenticated(true);
+              setUserEmail(em);
+              localStorage.setItem('taxsnap_current_user_email', em);
+              const prof = await processUserProfile(em);
+              setScreen(prof.completedOnboarding ? 'dashboard' : 'onboarding');
+              window.history.replaceState({}, document.title, window.location.pathname);
+            }
+          })
+          .catch((err) => {
+            console.warn('Code exchange error:', err);
+          });
+      }
+
+      // 3. Fetch Supabase session if present
       supabase.auth.getSession().then(async (res: any) => {
         const session = res?.data?.session;
         if (session?.user?.email) {
@@ -296,11 +331,17 @@ export default function App() {
           const em = session.user.email;
           setUserEmail(em);
           localStorage.setItem('taxsnap_current_user_email', em);
-          await processUserProfile(em);
+          const prof = await processUserProfile(em);
+          setScreen((prev) => {
+            if (prev === 'landing' || prev === 'login') {
+              return prof.completedOnboarding ? 'dashboard' : 'onboarding';
+            }
+            return prev;
+          });
         }
       });
 
-      // 3. Listen to Supabase auth state changes
+      // 4. Listen to Supabase auth state changes
       const { data } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
         if (session?.user?.email) {
           setIsAuthenticated(true);
@@ -1469,21 +1510,29 @@ function Login({
 
     try {
       if (supabase) {
-        const { error } = await supabase.auth.signInWithOAuth({
+        const redirectUrl = window.location.origin + window.location.pathname;
+        const { data, error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: window.location.origin,
+            redirectTo: redirectUrl,
+            queryParams: {
+              access_type: 'offline',
+              prompt: 'consent',
+            },
           },
         });
         if (error) {
-          onEnter('officer.google@taxsnap.gov.in');
+          setErrorMsg(error.message || 'Google Sign-In failed. Please try signing in with email.');
+          setLoading(false);
+        } else if (data?.url) {
+          window.location.href = data.url;
         }
       } else {
-        onEnter('officer.google@taxsnap.gov.in');
+        setErrorMsg('Supabase backend is not initialized.');
+        setLoading(false);
       }
     } catch (err: any) {
-      onEnter('officer.google@taxsnap.gov.in');
-    } finally {
+      setErrorMsg(err.message || 'Google Sign-In encountered an error.');
       setLoading(false);
     }
   };

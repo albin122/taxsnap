@@ -18,17 +18,25 @@ const LOCAL_STORAGE_KEY = 'taxease_saved_computations_v1';
 // Supabase Authentication Helpers
 // ---------------------------------------------------------------------------
 
-export async function signInWithGoogle(): Promise<{ error: any }> {
+export async function signInWithGoogle(): Promise<{ data?: any; error: any }> {
   if (!isSupabaseConfigured || !supabase) {
     return { error: { message: 'Supabase environment variables are missing.' } };
   }
-  const { error } = await supabase.auth.signInWithOAuth({
+  const redirectUrl = window.location.origin + window.location.pathname;
+  const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: window.location.origin,
+      redirectTo: redirectUrl,
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'consent',
+      },
     },
   });
-  return { error };
+  if (!error && data?.url) {
+    window.location.href = data.url;
+  }
+  return { data, error };
 }
 
 export async function signInWithEmail(email: string, password: string): Promise<{ data: any; error: any }> {

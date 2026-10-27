@@ -22,11 +22,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, onBackToHo
     try {
       const { error } = await signInWithGoogle();
       if (error) {
-        onLoginSuccess('officer.google@taxsnap.gov.in');
+        setErrorMessage(error.message || 'Google Sign-In failed. Please try again or use email.');
+        setLoading(false);
       }
     } catch (e: any) {
-      onLoginSuccess('officer.google@taxsnap.gov.in');
-    } finally {
+      setErrorMessage(e.message || 'Google Sign-In encountered an error.');
       setLoading(false);
     }
   };
