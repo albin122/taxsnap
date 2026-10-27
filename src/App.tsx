@@ -323,6 +323,31 @@ export default function App() {
           });
       }
 
+      const accessToken = hashParams.get('access_token');
+      const refreshToken = hashParams.get('refresh_token');
+      if (accessToken && refreshToken) {
+        supabase.auth
+          .setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          })
+          .then(async (res) => {
+            const user = res.data?.session?.user;
+            if (user?.email) {
+              const em = user.email;
+              setIsAuthenticated(true);
+              setUserEmail(em);
+              localStorage.setItem('taxsnap_current_user_email', em);
+              const prof = await processUserProfile(em);
+              setScreen(prof.completedOnboarding ? 'dashboard' : 'onboarding');
+              window.history.replaceState({}, document.title, window.location.pathname);
+            }
+          })
+          .catch((err) => {
+            console.warn('Hash session error:', err);
+          });
+      }
+
       // 3. Fetch Supabase session if present
       supabase.auth.getSession().then(async (res: any) => {
         const session = res?.data?.session;
