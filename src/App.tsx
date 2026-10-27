@@ -59,7 +59,7 @@ import {
 import type { SavedStatement } from './types/tax';
 import NavHeader from './components/ui/nav-header';
 import { ShaderBackground } from './components/ui/hero-shader';
-import { Analytics } from '@vercel/analytics/next';
+import { Analytics } from '@vercel/analytics/react';
 
 type Profile = { name: string; designation: string; pan: string; office_name: string; place: string };
 
