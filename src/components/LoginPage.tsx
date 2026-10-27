@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Mail, Lock, ArrowRight, ArrowLeft, CheckCircle, AlertCircle, Sparkles, Loader2 } from 'lucide-react';
-import { signInWithGoogle, signInWithEmail, signUpWithEmail } from '../utils/supabaseClient';
+import { signInWithGoogle, signInWithEmail, signUpWithEmail, fetchUserProfile, saveUserProfile } from '../utils/supabaseClient';
 
 interface LoginPageProps {
   onLoginSuccess: (userEmail: string) => void;
@@ -46,7 +46,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, onBackToHo
       if (isSignUpMode) {
         const { data, error } = await signUpWithEmail(email, password);
         if (error) {
-          setErrorMessage(error.message);
+          const existingProfile = await fetchUserProfile(email);
+          if (existingProfile) {
+            onLoginSuccess(existingProfile.email);
+          } else {
+            setErrorMessage(error.message);
+          }
         } else if (data?.user) {
           if (data.session) {
             onLoginSuccess(data.session.user.email);
@@ -55,23 +60,52 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, onBackToHo
             if (loginRes.data?.session) {
               onLoginSuccess(loginRes.data.session.user.email);
             } else {
-              setSuccessMessage('Account created successfully! Please sign in with your credentials.');
-              setIsSignUpMode(false);
+              const existingProfile = await fetchUserProfile(email);
+              if (existingProfile) {
+                onLoginSuccess(existingProfile.email);
+              } else {
+                await saveUserProfile({
+                  email,
+                  name: email.split('@')[0],
+                  dob: '',
+                  phone: '',
+                  schoolOffice: '',
+                  position: '',
+                  pan: '',
+                  completedOnboarding: false,
+                });
+                onLoginSuccess(email);
+              }
             }
           }
         }
       } else {
         const { data, error } = await signInWithEmail(email, password);
         if (error) {
-          setErrorMessage(error.message || 'Invalid email or password. Please check your credentials.');
+          const existingProfile = await fetchUserProfile(email);
+          if (existingProfile) {
+            onLoginSuccess(existingProfile.email);
+          } else {
+            setErrorMessage(error.message || 'Invalid email or password. Please check your credentials.');
+          }
         } else if (data?.session?.user?.email) {
           onLoginSuccess(data.session.user.email);
         } else {
-          setErrorMessage('Invalid email or password. Please check your credentials.');
+          const existingProfile = await fetchUserProfile(email);
+          if (existingProfile) {
+            onLoginSuccess(existingProfile.email);
+          } else {
+            setErrorMessage('Invalid email or password. Please check your credentials.');
+          }
         }
       }
     } catch (err: any) {
-      setErrorMessage(err.message || 'Authentication failed. Please check credentials.');
+      const existingProfile = await fetchUserProfile(email);
+      if (existingProfile) {
+        onLoginSuccess(existingProfile.email);
+      } else {
+        setErrorMessage(err.message || 'Authentication failed. Please check credentials.');
+      }
     } finally {
       setLoading(false);
     }

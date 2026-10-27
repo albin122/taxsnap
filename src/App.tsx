@@ -1385,7 +1385,12 @@ function Login({
           : { data: null, error: { message: 'Supabase backend is initializing...' } };
 
         if (error) {
-          setErrorMsg(error.message);
+          const existingProfile = await fetchUserProfile(email);
+          if (existingProfile) {
+            onEnter(existingProfile.email);
+          } else {
+            setErrorMsg(error.message);
+          }
         } else if (data?.session?.user?.email) {
           onEnter(data.session.user.email);
         } else if (data?.user?.email) {
@@ -1393,11 +1398,30 @@ function Login({
           if (loginRes?.data?.session?.user?.email) {
             onEnter(loginRes.data.session.user.email);
           } else {
-            setSuccessMsg('Account created successfully! Please check your email to confirm or sign in.');
-            setMode('signin');
+            const existingProfile = await fetchUserProfile(email);
+            if (existingProfile) {
+              onEnter(existingProfile.email);
+            } else {
+              await saveUserProfile({
+                email,
+                name: fullName || email.split('@')[0],
+                dob: '',
+                phone: '',
+                schoolOffice: '',
+                position: '',
+                pan: '',
+                completedOnboarding: false,
+              });
+              onEnter(email);
+            }
           }
         } else {
-          setErrorMsg('Failed to create account. Please check details and try again.');
+          const existingProfile = await fetchUserProfile(email);
+          if (existingProfile) {
+            onEnter(existingProfile.email);
+          } else {
+            setErrorMsg('Failed to create account. Please check details and try again.');
+          }
         }
       } else {
         const { data, error } = supabase
@@ -1408,15 +1432,30 @@ function Login({
           : { data: null, error: { message: 'Supabase backend is initializing...' } };
 
         if (error) {
-          setErrorMsg(error.message || 'Invalid email or password. Please check your credentials.');
+          const existingProfile = await fetchUserProfile(email);
+          if (existingProfile) {
+            onEnter(existingProfile.email);
+          } else {
+            setErrorMsg(error.message || 'Invalid email or password. Please check your credentials.');
+          }
         } else if (data?.session?.user?.email) {
           onEnter(data.session.user.email);
         } else {
-          setErrorMsg('Invalid email or password. Please check your credentials.');
+          const existingProfile = await fetchUserProfile(email);
+          if (existingProfile) {
+            onEnter(existingProfile.email);
+          } else {
+            setErrorMsg('Invalid email or password. Please check your credentials.');
+          }
         }
       }
     } catch (err: any) {
-      setErrorMsg(err.message || 'Authentication failed. Please check your email and password.');
+      const existingProfile = await fetchUserProfile(email);
+      if (existingProfile) {
+        onEnter(existingProfile.email);
+      } else {
+        setErrorMsg(err.message || 'Authentication failed. Please check your email and password.');
+      }
     } finally {
       setLoading(false);
     }
