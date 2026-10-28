@@ -1,14 +1,5 @@
 "use client";
 
-import {
-  Home01Icon,
-  InvoiceIcon,
-  PhoneCallIcon,
-  Settings01Icon,
-  ShieldCheckIcon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react';
-
 import PillNav from './PillNav';
 import type { PillNavItem } from './PillNav';
 
@@ -25,8 +16,6 @@ const TAB_ITEMS = [
   { label: 'Contact', href: '#contact' },
   { label: 'Settings', href: '#profile' },
 ];
-
-const glyph = (icon: any) => <HugeiconsIcon icon={icon} size="1em" strokeWidth={1.8} />;
 
 const tabIdToHref = (tabId?: string): string | undefined => {
   if (!tabId) return undefined;
