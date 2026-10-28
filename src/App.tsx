@@ -60,6 +60,7 @@ import type { SavedStatement } from './types/tax';
 import NavHeader from './components/ui/nav-header';
 import { ShaderBackground } from './components/ui/hero-shader';
 import ReflectiveCard from './components/ui/ReflectiveCard';
+import CardSwap from './components/ui/CardSwap';
 import { Analytics } from '@vercel/analytics/next';
 
 type Profile = { name: string; designation: string; pan: string; office_name: string; place: string };
@@ -2930,55 +2931,64 @@ function Dashboard({
                   </span>
                 </div>
 
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm text-left">
-                    <thead>
-                      <tr className={`text-xs font-semibold uppercase tracking-wider border-b ${
-                        isLight ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-[#071815]/70 text-emerald-200/70 border-[#2dd4bf]/20'
-                      }`}>
-                        <th className="px-4 py-3">Income Slab (₹)</th>
-                        <th className="px-4 py-3 text-center">Tax Rate</th>
-                        <th className="px-4 py-3">Key Highlights &amp; Rebate Rules</th>
-                      </tr>
-                    </thead>
-                    <tbody className={`divide-y ${isLight ? 'divide-slate-200' : 'divide-[#2dd4bf]/15'}`}>
-                      <tr className={isLight ? 'bg-teal-50/80' : 'bg-[#2dd4bf]/10'}>
-                        <td className="px-4 py-3.5 font-mono font-bold">Up to ₹4,00,000</td>
-                        <td className={`px-4 py-3.5 text-center font-bold ${isLight ? 'text-teal-700' : 'text-[#2dd4bf]'}`}>NIL (0%)</td>
-                        <td className={`px-4 py-3.5 text-xs ${isLight ? 'text-slate-600' : 'text-emerald-200/80'}`}>Completely exempt basic threshold for all taxpayers</td>
-                      </tr>
-                      <tr>
-                        <td className="px-4 py-3.5 font-mono">₹4,00,001 – ₹8,00,000</td>
-                        <td className="px-4 py-3.5 text-center font-semibold">5%</td>
-                        <td className={`px-4 py-3.5 text-xs ${isLight ? 'text-slate-600' : 'text-emerald-200/70'}`}>Covered under Section 156 Rebate up to ₹12L</td>
-                      </tr>
-                      <tr>
-                        <td className="px-4 py-3.5 font-mono">₹8,00,001 – ₹12,00,000</td>
-                        <td className="px-4 py-3.5 text-center font-semibold">10%</td>
-                        <td className={`px-4 py-3.5 text-xs ${isLight ? 'text-slate-600' : 'text-emerald-200/70'}`}>Fully rebated (₹60,000 max rebate u/s 156)</td>
-                      </tr>
-                      <tr>
-                        <td className="px-4 py-3.5 font-mono">₹12,00,001 – ₹16,00,000</td>
-                        <td className="px-4 py-3.5 text-center font-semibold">15%</td>
-                        <td className={`px-4 py-3.5 text-xs ${isLight ? 'text-slate-600' : 'text-emerald-200/70'}`}>Marginal relief applies if income slightly exceeds ₹12L</td>
-                      </tr>
-                      <tr>
-                        <td className="px-4 py-3.5 font-mono">₹16,00,001 – ₹20,00,000</td>
-                        <td className="px-4 py-3.5 text-center font-semibold">20%</td>
-                        <td className={`px-4 py-3.5 text-xs ${isLight ? 'text-slate-600' : 'text-emerald-200/70'}`}>Standard tax bracket</td>
-                      </tr>
-                      <tr>
-                        <td className="px-4 py-3.5 font-mono">₹20,00,001 – ₹24,00,000</td>
-                        <td className="px-4 py-3.5 text-center font-semibold">25%</td>
-                        <td className={`px-4 py-3.5 text-xs ${isLight ? 'text-slate-600' : 'text-emerald-200/70'}`}>Higher bracket</td>
-                      </tr>
-                      <tr className={isLight ? 'bg-amber-50/50' : 'bg-[#071815]'}>
-                        <td className="px-4 py-3.5 font-mono font-bold">Above ₹24,00,000</td>
-                        <td className="px-4 py-3.5 text-center font-bold text-amber-600">30%</td>
-                        <td className={`px-4 py-3.5 text-xs ${isLight ? 'text-slate-600' : 'text-emerald-200/70'}`}>Maximum slab rate + applicable surcharge</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div className="mt-6">
+                  <CardSwap
+                    theme={isLight ? 'light' : 'dark'}
+                    width={420}
+                    height={300}
+                    delay={3800}
+                    items={[
+                      {
+                        title: 'Up to ₹4,00,000',
+                        subtitle: 'Tax-free',
+                        rate: '0%',
+                        description: 'Completely exempt basic threshold for all taxpayers.',
+                        accent: '#2dd4bf',
+                      },
+                      {
+                        title: '₹4,00,001 – ₹8,00,000',
+                        subtitle: 'Standard tax band',
+                        rate: '5%',
+                        description: 'Covered under Section 156 rebate up to ₹12L.',
+                        accent: '#5eead4',
+                      },
+                      {
+                        title: '₹8,00,001 – ₹12,00,000',
+                        subtitle: 'Rebate tier',
+                        rate: '10%',
+                        description: 'Fully rebated up to ₹60,000 under Section 156.',
+                        accent: '#67e8f9',
+                      },
+                      {
+                        title: '₹12,00,001 – ₹16,00,000',
+                        subtitle: 'Marginal relief',
+                        rate: '15%',
+                        description: 'Marginal relief applies slightly above the rebate threshold.',
+                        accent: '#a5f3fc',
+                      },
+                      {
+                        title: '₹16,00,001 – ₹20,00,000',
+                        subtitle: 'Higher bracket',
+                        rate: '20%',
+                        description: 'Standard tax-bracket progression.',
+                        accent: '#9ae6b4',
+                      },
+                      {
+                        title: '₹20,00,001 – ₹24,00,000',
+                        subtitle: 'Progressive tier',
+                        rate: '25%',
+                        description: 'Higher-bracket taxation before the top marginal rate.',
+                        accent: '#f9a8d4',
+                      },
+                      {
+                        title: 'Above ₹24,00,000',
+                        subtitle: 'Top slab',
+                        rate: '30%',
+                        description: 'Maximum slab rate plus applicable surcharge.',
+                        accent: '#fbbf24',
+                      },
+                    ]}
+                  />
                 </div>
               </div>
             </motion.div>
