@@ -90,52 +90,18 @@ export default function NavHeader({ activeTab, onTabChange, theme = 'dark' }: Na
       <div className="w-full px-2 md:hidden">
         <div className="mx-auto max-w-[440px] space-y-3">
           <div className="flex items-center justify-between rounded-full border border-white/10 bg-[#1a2329]/80 px-3 py-2.5 shadow-[0_12px_30px_rgba(0,0,0,0.25)] backdrop-blur-xl">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <button
-                type="button"
-                onClick={() => onTabChange?.('overview')}
-                className={`flex h-8 w-8 items-center justify-center rounded-full border ${
-                  activeTab === 'overview'
-                    ? 'border-[#2dd4bf]/50 bg-[#2dd4bf]/10 text-white'
-                    : 'border-white/10 bg-white/5 text-white/80'
-                }`}
-                aria-label="Home"
-              >
+            <button
+              type="button"
+              onClick={() => onTabChange?.('overview')}
+              className="flex items-center gap-2.5 min-w-0 text-left"
+              aria-label="TaxSnap home"
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[#2dd4bf]/60 bg-[#2dd4bf]/10 text-[#2dd4bf]">
                 <img src="/logo.png" alt="TaxSnap" className="size-5 rounded-md object-contain" />
-              </button>
+              </span>
 
-              <div className="flex min-w-0 items-center gap-1.5 text-white/90">
-                <span className="text-sm font-medium text-white/90">-hazel.vercel.app</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => onTabChange?.('overview')}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-lg font-medium text-white"
-                aria-label="Add"
-              >
-                +
-              </button>
-
-              <div className="flex h-7 min-w-7 items-center justify-center rounded-full border border-white/10 bg-white/5 px-2 text-[11px] font-semibold text-white">
-                17
-              </div>
-
-              <button
-                type="button"
-                onClick={() => onTabChange?.('profile')}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80"
-                aria-label="More options"
-              >
-                <svg viewBox="0 0 24 24" className="size-4 fill-current" aria-hidden="true">
-                  <circle cx="12" cy="5" r="1.5" />
-                  <circle cx="12" cy="12" r="1.5" />
-                  <circle cx="12" cy="19" r="1.5" />
-                </svg>
-              </button>
-            </div>
+              <span className="truncate text-lg font-semibold tracking-tight text-white">TaxSnap</span>
+            </button>
           </div>
 
           <nav className="flex items-center gap-1.5 rounded-full border border-white/10 bg-[#1b2a2d]/85 px-1.5 py-1.5 shadow-[0_18px_34px_rgba(0,0,0,0.26)] backdrop-blur-xl">
