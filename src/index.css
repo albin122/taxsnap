@@ -109,6 +109,87 @@ input[type="number"] {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
+/* ── Mobile touch & input resets ────────────────────────────────────── */
+
+/* Prevent iOS text-size adjust on orientation change */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Ensure the root fills the full viewport on mobile (safe-area aware) */
+html, body, #root {
+  min-height: 100dvh; /* dynamic viewport height — fixes iOS toolbar overlap */
+  overscroll-behavior: none; /* prevent pull-to-refresh swallowing the page */
+}
+
+/* Remove 300 ms tap delay on all interactive elements */
+a, button, input, select, textarea, label, [role="button"] {
+  touch-action: manipulation;
+}
+
+/* Prevent tap highlight flicker on Android Chrome */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Remove iOS input inner shadow & rounded corners */
+input, textarea, select {
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+
+/* Inputs: bump minimum font-size to 16 px so iOS doesn't zoom on focus */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="date"],
+input[type="search"],
+textarea,
+select {
+  font-size: 16px !important; /* critical: <16 px triggers zoom on iOS */
+}
+
+/* Safe-area padding for notched phones (bottom bar / Dynamic Island) */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Smooth momentum scrolling inside scroll containers on iOS */
+.overflow-y-auto,
+.overflow-x-auto,
+[class*="overflow-y"],
+[class*="overflow-x"] {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent horizontal overflow / bounce on mobile */
+body {
+  overflow-x: hidden;
+}
+
+/* Fix sticky headers on iOS — forces GPU layer */
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+}
+
+/* Mobile-friendly focus ring (accessible without mouse hover) */
+@media (hover: none) {
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible {
+    outline: 2px solid #2dd4bf;
+    outline-offset: 2px;
+  }
+}
+
+/* ── Print styles ────────────────────────────────────────────────────── */
 @media print {
   .no-print {
     display: none !important;

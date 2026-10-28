@@ -59,6 +59,7 @@ import {
 import type { SavedStatement } from './types/tax';
 import NavHeader from './components/ui/nav-header';
 import { ShaderBackground } from './components/ui/hero-shader';
+import ReflectiveCard from './components/ui/ReflectiveCard';
 import { Analytics } from '@vercel/analytics/next';
 
 type Profile = { name: string; designation: string; pan: string; office_name: string; place: string };
@@ -806,7 +807,7 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="mx-auto max-w-5xl px-5 py-8 md:py-12"
+            className="mx-auto max-w-5xl px-4 sm:px-5 py-6 md:py-12"
           >
             <TopBar
               userEmail={userEmail}
@@ -942,7 +943,7 @@ export default function App() {
                               </button>
                             </div>
 
-                            <div className="grid gap-6 lg:grid-cols-[2.2fr_1fr]">
+                            <div className="grid gap-6 grid-cols-1 lg:grid-cols-[2.2fr_1fr]">
                               {/* 12 Months Column + Other Income Section */}
                               <div className="space-y-5">
                                 {/* 12 Months Grid */}
@@ -1262,10 +1263,10 @@ export default function App() {
             )}
 
             {/* Nav */}
-            <div className="no-print mt-8 flex items-center justify-between gap-4">
+            <div className="no-print mt-6 flex items-center justify-between gap-3 pb-4 safe-bottom">
               <button
                 onClick={() => (step === 0 ? setScreen('landing') : go(step - 1))}
-                className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-semibold text-ink-soft transition-colors hover:border-navy hover:text-navy"
+                className="inline-flex items-center gap-2 rounded-full border border-line px-4 py-3 text-sm font-semibold text-ink-soft transition-colors hover:border-navy hover:text-navy min-h-[48px]"
               >
                 <ArrowLeft className="size-4" /> Back
               </button>
@@ -1273,26 +1274,27 @@ export default function App() {
                 <button
                   onClick={() => go(step + 1)}
                   disabled={step === 0 && !step1Valid}
-                  className="group inline-flex items-center gap-2 rounded-full bg-navy px-6 py-2.5 text-sm font-semibold text-paper shadow-lg shadow-navy/25 transition-all hover:bg-navy-2 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="group inline-flex items-center gap-2 rounded-full bg-navy px-5 py-3 text-sm font-semibold text-paper shadow-lg shadow-navy/25 transition-all hover:bg-navy-2 disabled:cursor-not-allowed disabled:opacity-40 min-h-[48px]"
                 >
-                  {['Next: Salary Details', 'Next: Deductions', 'Compute Tax'][step]}
+                  <span className="hidden sm:inline">{['Next: Salary Details', 'Next: Deductions', 'Compute Tax'][step]}</span>
+                  <span className="sm:hidden">{['Next', 'Next', 'Compute'][step]}</span>
                   <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
                 </button>
               ) : (
-                <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                   <button
                     type="button"
                     onClick={handleSaveOnly}
-                    className="inline-flex items-center gap-2 rounded-full border border-emerald-600/40 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 px-5 py-2.5 text-sm font-bold shadow-xs transition-all cursor-pointer"
+                    className="inline-flex items-center gap-2 rounded-full border border-emerald-600/40 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 px-4 py-3 text-xs font-bold shadow-xs transition-all cursor-pointer min-h-[48px]"
                   >
-                    <Save className="size-4 text-emerald-600" /> Save Computation
+                    <Save className="size-4 text-emerald-600" /> <span className="hidden xs:inline">Save</span><span className="xs:hidden">Save</span>
                   </button>
                   <button
                     type="button"
                     onClick={handleSaveAndPrint}
-                    className="inline-flex items-center gap-2 rounded-full bg-gold hover:brightness-105 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-gold/30 transition-all cursor-pointer"
+                    className="inline-flex items-center gap-2 rounded-full bg-gold hover:brightness-105 px-5 py-3 text-xs font-bold text-white shadow-lg shadow-gold/30 transition-all cursor-pointer min-h-[48px]"
                   >
-                    <Printer className="size-4" /> Print Statement
+                    <Printer className="size-4" /> Print
                   </button>
                 </div>
               )}
@@ -1384,7 +1386,7 @@ function Landing({
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="font-display text-7xl font-extrabold leading-[0.96] tracking-tight md:text-9xl text-white drop-shadow-[0_12px_30px_rgba(0,0,0,0.5)]"
+            className="font-display text-5xl font-extrabold leading-[0.96] tracking-tight sm:text-7xl md:text-9xl text-white drop-shadow-[0_12px_30px_rgba(0,0,0,0.5)]"
           >
             TaxSnap
           </motion.h1>
@@ -2034,9 +2036,9 @@ function Dashboard({
           isLight ? 'text-slate-900' : 'text-white'
         }`}
       >
-        {/* Floating Centered Glass Header Pill (matching sample photo) */}
+        {/* Floating header: brand left, nav right, same level */}
         <header className="no-print sticky top-4 z-50 transition-all duration-300 py-2">
-          <div className="mx-auto flex max-w-7xl items-center justify-center px-4">
+          <div className="mx-auto flex max-w-7xl items-center px-4 sm:px-6">
             <NavHeader
               activeTab={activeTab}
               onTabChange={(tab) => setActiveTab(tab as any)}
@@ -2046,12 +2048,12 @@ function Dashboard({
         </header>
 
         {/* Main Container */}
-        <div className="mx-auto max-w-6xl px-6 pt-8 pb-20">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-6 pb-24">
           {/* Tab 1: Overview */}
           {activeTab === 'overview' && (
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
               {/* High-Impact Figma Hero Banner */}
-              <div className={`relative overflow-hidden rounded-3xl border p-8 shadow-2xl backdrop-blur-2xl md:p-12 transition-all ${
+              <div className={`relative overflow-hidden rounded-3xl border p-5 sm:p-8 shadow-2xl backdrop-blur-2xl md:p-12 transition-all ${
                 isLight
                   ? 'border-teal-200/80 bg-white/85 text-slate-900 shadow-teal-900/5'
                   : 'border-[#2dd4bf]/30 bg-[#0c2320]/80 text-white'
@@ -2063,7 +2065,7 @@ function Dashboard({
                 <div className="relative z-10 space-y-6 max-w-3xl">
 
 
-                  <h1 className="font-display text-4xl font-extrabold leading-[1.15] tracking-tight sm:text-5xl md:text-6xl">
+                  <h1 className="font-display text-3xl font-extrabold leading-[1.15] tracking-tight sm:text-5xl md:text-6xl">
                     Smart New Tax Regime <br />
                     <span className={`font-serif italic bg-gradient-to-r ${
                       isLight
@@ -2105,7 +2107,7 @@ function Dashboard({
               </div>
 
               {/* 4 Glass KPI Cards Grid */}
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4">
                 <div className={`group rounded-3xl border p-6 shadow-xl transition-all ${
                   isLight
                     ? 'border-teal-200/60 bg-white/80 text-slate-900 hover:border-teal-400'
@@ -2170,64 +2172,81 @@ function Dashboard({
               {/* Rearranged 2-Column Content Grid */}
               <div className="grid gap-6 lg:grid-cols-[1fr_1.6fr]">
                 {/* Executive Taxpayer Profile Card */}
-                <div className={`rounded-3xl border p-6 shadow-2xl backdrop-blur-2xl flex flex-col justify-between relative overflow-hidden transition-all ${
-                  isLight
-                    ? 'border-teal-200/80 bg-white/85 text-slate-900'
-                    : 'border-[#2dd4bf]/30 bg-[#0c2320]/80 text-white'
-                }`}>
-                  <div>
-                    <div className={`flex items-center gap-4 border-b pb-5 ${isLight ? 'border-teal-200' : 'border-[#2dd4bf]/20'}`}>
-                      <div className={`flex size-16 items-center justify-center rounded-2xl text-2xl font-bold shadow-xl border ${
-                        isLight ? 'bg-teal-100 text-teal-800 border-teal-300' : 'bg-[#2dd4bf]/20 text-[#2dd4bf] border-[#2dd4bf]/40'
-                      }`}>
-                        {userInitials}
-                      </div>
-                      <div className="overflow-hidden">
-                        <span className={`text-[0.65rem] font-bold uppercase tracking-widest block ${isLight ? 'text-teal-700' : 'text-[#2dd4bf]'}`}>TAXPAYER PROFILE</span>
-                        <h4 className="font-display text-xl font-bold truncate">{userName}</h4>
-                        <p className={`text-xs truncate font-mono ${isLight ? 'text-slate-500' : 'text-emerald-200/70'}`}>{personalProfile.email || userEmail}</p>
-                      </div>
-                    </div>
-
-                    <div className="mt-5 space-y-3 text-xs">
-                      <div className={`flex justify-between items-center py-1 border-b ${isLight ? 'border-slate-200' : 'border-[#2dd4bf]/15'}`}>
-                        <span className={isLight ? 'text-slate-500' : 'text-emerald-200/70'}>Designation:</span>
-                        <strong className="font-semibold">{personalProfile.position || 'Not set'}</strong>
-                      </div>
-                      <div className={`flex justify-between items-center py-1 border-b ${isLight ? 'border-slate-200' : 'border-[#2dd4bf]/15'}`}>
-                        <span className={isLight ? 'text-slate-500' : 'text-emerald-200/70'}>Office / School:</span>
-                        <strong className="font-semibold">{personalProfile.schoolOffice || 'Not set'}</strong>
-                      </div>
-                      <div className={`flex justify-between items-center py-1 border-b ${isLight ? 'border-slate-200' : 'border-[#2dd4bf]/15'}`}>
-                        <span className={isLight ? 'text-slate-500' : 'text-emerald-200/70'}>PAN Number:</span>
-                        <strong className={`font-mono text-xs font-bold uppercase px-2 py-0.5 rounded border ${
-                          isLight ? 'bg-teal-50 text-teal-800 border-teal-200' : 'text-[#2dd4bf] bg-[#2dd4bf]/15 border-[#2dd4bf]/30'
+                <ReflectiveCard
+                  theme={isLight ? 'light' : 'dark'}
+                  tint={isLight ? '#e8f5f2' : '#2dd4bf'}
+                  metalness={1}
+                  roughness={0.35}
+                  blurStrength={6}
+                  shine={1}
+                  glare={0.5}
+                  webcam={false}
+                  width="100%"
+                  height={520}
+                  radius={28}
+                  className="w-full max-w-none"
+                  statusColor="#2dd4bf"
+                >
+                  <div className="flex h-full flex-col justify-between">
+                    <div>
+                      <div className={`flex items-center gap-4 border-b pb-5 ${isLight ? 'border-slate-300/70' : 'border-white/15'}`}>
+                        <div className={`flex size-16 items-center justify-center rounded-2xl text-2xl font-bold shadow-xl border ${
+                          isLight ? 'bg-teal-100 text-teal-800 border-teal-300' : 'bg-white/10 text-[#2dd4bf] border-white/20'
                         }`}>
-                          {personalProfile.pan || 'NOT SET'}
-                        </strong>
+                          {userInitials}
+                        </div>
+                        <div className="overflow-hidden min-w-0">
+                          <span className={`text-[0.65rem] font-bold uppercase tracking-widest block ${isLight ? 'text-teal-700' : 'text-[#2dd4bf]'}`}>
+                            TAXPAYER PROFILE
+                          </span>
+                          <h4 className="font-display text-xl font-bold truncate">{userName}</h4>
+                          <p className={`text-xs truncate font-mono ${isLight ? 'text-slate-500' : 'text-white/60'}`}>
+                            {personalProfile.email || userEmail}
+                          </p>
+                        </div>
                       </div>
-                      <div className={`flex justify-between items-center py-1 border-b ${isLight ? 'border-slate-200' : 'border-[#2dd4bf]/15'}`}>
-                        <span className={isLight ? 'text-slate-500' : 'text-emerald-200/70'}>Date of Birth:</span>
-                        <strong className="font-semibold">{personalProfile.dob || 'Not set'}</strong>
-                      </div>
-                      <div className="flex justify-between items-center py-1">
-                        <span className={isLight ? 'text-slate-500' : 'text-emerald-200/70'}>Applicable Regime:</span>
-                        <strong className={`font-semibold ${isLight ? 'text-teal-700' : 'text-[#2dd4bf]'}`}>New Regime (115BAC)</strong>
+
+                      <div className="mt-5 space-y-3 text-xs">
+                        <div className={`flex justify-between items-center py-1 border-b ${isLight ? 'border-slate-200' : 'border-white/10'}`}>
+                          <span className={isLight ? 'text-slate-500' : 'text-white/60'}>Designation:</span>
+                          <strong className="font-semibold">{personalProfile.position || 'Not set'}</strong>
+                        </div>
+                        <div className={`flex justify-between items-center py-1 border-b ${isLight ? 'border-slate-200' : 'border-white/10'}`}>
+                          <span className={isLight ? 'text-slate-500' : 'text-white/60'}>Office / School:</span>
+                          <strong className="font-semibold">{personalProfile.schoolOffice || 'Not set'}</strong>
+                        </div>
+                        <div className={`flex justify-between items-center py-1 border-b ${isLight ? 'border-slate-200' : 'border-white/10'}`}>
+                          <span className={isLight ? 'text-slate-500' : 'text-white/60'}>PAN Number:</span>
+                          <strong className={`font-mono text-xs font-bold uppercase px-2 py-0.5 rounded border ${
+                            isLight ? 'bg-teal-50 text-teal-800 border-teal-200' : 'text-[#2dd4bf] bg-[#2dd4bf]/15 border-[#2dd4bf]/30'
+                          }`}>
+                            {personalProfile.pan || 'NOT SET'}
+                          </strong>
+                        </div>
+                        <div className={`flex justify-between items-center py-1 border-b ${isLight ? 'border-slate-200' : 'border-white/10'}`}>
+                          <span className={isLight ? 'text-slate-500' : 'text-white/60'}>Date of Birth:</span>
+                          <strong className="font-semibold">{personalProfile.dob || 'Not set'}</strong>
+                        </div>
+                        <div className="flex justify-between items-center py-1">
+                          <span className={isLight ? 'text-slate-500' : 'text-white/60'}>Applicable Regime:</span>
+                          <strong className={`font-semibold ${isLight ? 'text-teal-700' : 'text-[#2dd4bf]'}`}>New Regime (115BAC)</strong>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <button
-                    onClick={() => setActiveTab('profile')}
-                    className={`mt-6 inline-flex items-center justify-center gap-2 rounded-full border py-3 text-xs font-bold transition-all cursor-pointer ${
-                      isLight
-                        ? 'border-teal-300 bg-teal-50 text-teal-800 hover:bg-teal-600 hover:text-white'
-                        : 'border-[#2dd4bf]/30 bg-[#2dd4bf]/10 text-[#2dd4bf] hover:bg-[#2dd4bf] hover:text-[#041019]'
-                    }`}
-                  >
-                    <User className="size-4" /> View &amp; Edit Settings Details
-                  </button>
-                </div>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('profile')}
+                      className={`mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full border py-3 text-xs font-bold transition-all cursor-pointer ${
+                        isLight
+                          ? 'border-teal-300 bg-teal-50/80 text-teal-800 hover:bg-teal-600 hover:text-white'
+                          : 'border-white/20 bg-white/5 text-[#2dd4bf] hover:bg-[#2dd4bf] hover:text-[#041019]'
+                      }`}
+                    >
+                      <User className="size-4" /> View &amp; Edit Settings Details
+                    </button>
+                  </div>
+                </ReflectiveCard>
 
                 {/* Saved Statements Card (Recent 5 Calculations) */}
                 <div className={`rounded-3xl border p-6 shadow-2xl backdrop-blur-2xl flex flex-col justify-between transition-all ${
@@ -3160,7 +3179,7 @@ function ProgressRail({ step, onJump }: { step: number; onJump: (n: number) => v
         <button
           key={label}
           onClick={() => i <= step && onJump(i)}
-          className="group flex flex-1 flex-col gap-2 text-left"
+          className="group flex flex-1 flex-col gap-2 text-left min-h-[44px]"
           disabled={i > step}
         >
           <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-line">
@@ -3177,7 +3196,8 @@ function ProgressRail({ step, onJump }: { step: number; onJump: (n: number) => v
             }`}
           >
             {i < step && <CheckCircle2 className="size-3.5" />}
-            <span className="tabular-nums">{String(i + 1).padStart(2, '0')}</span> {label}
+            <span className="tabular-nums">{String(i + 1).padStart(2, '0')}</span>{' '}
+            <span className="hidden sm:inline">{label}</span>
           </span>
         </button>
       ))}
@@ -3199,12 +3219,12 @@ function StepShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-3xl border border-line bg-paper-2/50 p-6 shadow-sm md:p-8">
+    <div className="rounded-3xl border border-line bg-paper-2/50 p-4 sm:p-6 shadow-sm md:p-8">
       <div className="mb-7 flex items-start gap-4">
         <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-navy text-paper">{icon}</div>
         <div>
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-gold">{eyebrow}</p>
-          <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">{title}</h2>
+          <h2 className="font-display text-xl sm:text-2xl font-semibold tracking-tight text-ink">{title}</h2>
           <p className="mt-0.5 text-sm text-ink-soft/80">{desc}</p>
         </div>
       </div>
@@ -3221,7 +3241,7 @@ function LivePreview({ label, value, rows }: { label: string; value: number; row
         key={value}
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative z-10 mt-1 font-mono text-4xl font-bold tabular-nums"
+        className="relative z-10 mt-1 font-mono text-2xl sm:text-4xl font-bold tabular-nums"
       >
         {formatINR(value)}
       </motion.p>
