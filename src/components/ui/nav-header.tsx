@@ -124,8 +124,11 @@ export default function NavHeader({ activeTab, onTabChange, theme = 'dark' }: Na
         </div>
       </div>
 
-      <div className="pointer-events-none fixed inset-x-0 bottom-3 z-50 flex justify-center md:hidden">
-        <div className="pointer-events-auto">
+      <div
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-3 pb-[calc(env(safe-area-inset-bottom)+0.65rem)] md:hidden"
+        style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 0.65rem)' }}
+      >
+        <div className="pointer-events-auto w-full max-w-[420px]">
           <Dock
             items={mobileItems}
             theme={isLight ? 'light' : 'dark'}

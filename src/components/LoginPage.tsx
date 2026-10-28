@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Mail, Lock, ArrowRight, ArrowLeft, CheckCircle, AlertCircle, Sparkles, Loader2 } from 'lucide-react';
-import { signInWithGoogle, signInWithEmail, signUpWithEmail, fetchUserProfile, saveUserProfile } from '../utils/supabaseClient';
+import { signInWithGoogle, signInWithEmail, signUpWithEmail, fetchUserProfile, saveUserProfile, supabase } from '../utils/supabaseClient';
 
 interface LoginPageProps {
   onLoginSuccess: (userEmail: string) => void;
@@ -15,6 +15,36 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, onBackToHo
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    const checkExistingSession = async () => {
+      if (!supabase) return;
+      try {
+        const { data } = await supabase.auth.getSession();
+        const sessionEmail = data?.session?.user?.email;
+        if (active && sessionEmail) {
+          onLoginSuccess(sessionEmail);
+        }
+      } catch (error) {
+        console.warn('Login session check failed:', error);
+      }
+    };
+
+    void checkExistingSession();
+
+    const { data: authListener } = supabase?.auth.onAuthStateChange((event, session) => {
+      if (active && session?.user?.email && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED')) {
+        onLoginSuccess(session.user.email);
+      }
+    }) ?? { data: { subscription: { unsubscribe: () => undefined } } };
+
+    return () => {
+      active = false;
+      authListener?.subscription?.unsubscribe?.();
+    };
+  }, [onLoginSuccess]);
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
@@ -46,11 +76,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, onBackToHo
 
     try {
       if (isSignUpMode) {
-        if (signUpWithEmail) {
-          try {
-            await signUpWithEmail(cleanEmail, password);
-          } catch (e) {}
+        const { data, error } = await signUpWithEmail(cleanEmail, password);
+        if (error) {
+          throw error;
         }
+
+        if (data?.session?.user?.email) {
+          onLoginSuccess(data.session.user.email);
+          return;
+        }
+
         const existingProfile = await fetchUserProfile(cleanEmail);
         if (existingProfile) {
           onLoginSuccess(existingProfile.email);
@@ -68,38 +103,69 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, onBackToHo
           onLoginSuccess(cleanEmail);
         }
       } else {
-        // Sign In mode
-        let sessionUserEmail: string | null = null;
-        try {
-          const { data } = await signInWithEmail(cleanEmail, password);
-          if (data?.session?.user?.email) {
-            sessionUserEmail = data.session.user.email;
-          }
-        } catch (e) {}
+        const { data, error } = await signInWithEmail(cleanEmail, password);
 
-        if (sessionUserEmail) {
-          onLoginSuccess(sessionUserEmail);
-        } else {
+        if (error) {
+          const isNewUser = /invalid login credentials|user not found|email not confirmed/i.test(error.message || '');
+          if (!isNewUser) {
+            throw error;
+          }
+
+          const { data: signupData, error: signupError } = await signUpWithEmail(cleanEmail, password);
+          if (signupError) {
+            throw signupError;
+          }
+
+          if (signupData?.session?.user?.email) {
+            onLoginSuccess(signupData.session.user.email);
+            return;
+          }
+
           const existingProfile = await fetchUserProfile(cleanEmail);
           if (existingProfile) {
             onLoginSuccess(existingProfile.email);
-          } else {
-            await saveUserProfile({
-              email: cleanEmail,
-              name: cleanEmail.split('@')[0],
-              dob: '',
-              phone: '',
-              schoolOffice: '',
-              position: '',
-              pan: '',
-              completedOnboarding: false,
-            });
-            onLoginSuccess(cleanEmail);
+            return;
           }
+
+          await saveUserProfile({
+            email: cleanEmail,
+            name: cleanEmail.split('@')[0],
+            dob: '',
+            phone: '',
+            schoolOffice: '',
+            position: '',
+            pan: '',
+            completedOnboarding: false,
+          });
+          onLoginSuccess(cleanEmail);
+          return;
         }
+
+        if (data?.session?.user?.email) {
+          onLoginSuccess(data.session.user.email);
+          return;
+        }
+
+        const existingProfile = await fetchUserProfile(cleanEmail);
+        if (existingProfile) {
+          onLoginSuccess(existingProfile.email);
+          return;
+        }
+
+        await saveUserProfile({
+          email: cleanEmail,
+          name: cleanEmail.split('@')[0],
+          dob: '',
+          phone: '',
+          schoolOffice: '',
+          position: '',
+          pan: '',
+          completedOnboarding: false,
+        });
+        onLoginSuccess(cleanEmail);
       }
     } catch (err: any) {
-      onLoginSuccess(cleanEmail);
+      setErrorMessage(err?.message || 'Unable to sign in. Please check your credentials or create a new account.');
     } finally {
       setLoading(false);
     }

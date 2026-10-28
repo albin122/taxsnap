@@ -13,7 +13,8 @@
     var(--dock-panel-shadow);
   -webkit-backdrop-filter: blur(20px) saturate(1.6);
   backdrop-filter: blur(20px) saturate(1.6);
-  touch-action: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   transition:
     translate 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.2s ease;
@@ -54,8 +55,10 @@
 }
 
 .dock--bottom {
-  bottom: 12px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
   align-items: flex-end;
+  width: min(calc(100vw - 1rem), 420px);
+  max-width: 420px;
 }
 
 .dock--top {
@@ -121,7 +124,7 @@
 
 .dock-item {
   position: relative;
-  flex: none;
+  flex: 1 1 0;
   width: var(--dock-base);
   height: var(--dock-base);
   margin: 0;

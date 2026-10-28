@@ -1447,6 +1447,36 @@ function Login({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
+  useEffect(() => {
+    let active = true;
+
+    const checkExistingSession = async () => {
+      if (!supabase) return;
+      try {
+        const { data } = await supabase.auth.getSession();
+        const existingEmail = data?.session?.user?.email;
+        if (active && existingEmail) {
+          onEnter(existingEmail);
+        }
+      } catch (error) {
+        console.warn('Session fetch failed:', error);
+      }
+    };
+
+    void checkExistingSession();
+
+    const { data: authListener } = supabase?.auth.onAuthStateChange((event, session) => {
+      if (active && session?.user?.email && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED')) {
+        onEnter(session.user.email);
+      }
+    }) ?? { data: { subscription: { unsubscribe: () => undefined } } };
+
+    return () => {
+      active = false;
+      authListener?.subscription?.unsubscribe?.();
+    };
+  }, [onEnter]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
@@ -1461,16 +1491,25 @@ function Login({
     try {
       if (mode === 'signup') {
         if (supabase) {
-          try {
-            await supabase.auth.signUp({
-              email: cleanEmail,
-              password,
-              options: {
-                data: { full_name: fullName || cleanEmail.split('@')[0] },
-              },
-            });
-          } catch (e) {}
+          const { data, error } = await supabase.auth.signUp({
+            email: cleanEmail,
+            password,
+            options: {
+              data: { full_name: fullName || cleanEmail.split('@')[0] },
+            },
+          });
+
+          if (error) {
+            throw error;
+          }
+
+          const signedInUser = data?.user?.email || cleanEmail;
+          if (data?.session?.user?.email) {
+            onEnter(signedInUser);
+            return;
+          }
         }
+
         const existing = await fetchUserProfile(cleanEmail);
         if (!existing) {
           await saveUserProfile({
@@ -1484,47 +1523,86 @@ function Login({
             completedOnboarding: false,
           });
         }
+        setSuccessMsg('Account created. Please complete your profile setup next.');
         onEnter(cleanEmail);
-      } else {
-        // Sign In mode: Attempt Supabase Auth first
-        let sessionUserEmail: string | null = null;
-        if (supabase) {
-          try {
-            const { data } = await supabase.auth.signInWithPassword({
+        return;
+      }
+
+      if (supabase) {
+        try {
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email: cleanEmail,
+            password,
+          });
+
+          if (error) {
+            throw error;
+          }
+
+          if (data?.session?.user?.email) {
+            onEnter(data.session.user.email);
+            return;
+          }
+        } catch (signInError: any) {
+          const isUserNotFound = /invalid login credentials|user not found|email not confirmed/i.test(signInError?.message || '');
+          if (isUserNotFound) {
+            const { data, error } = await supabase.auth.signUp({
               email: cleanEmail,
               password,
+              options: {
+                data: { full_name: cleanEmail.split('@')[0] },
+              },
             });
-            if (data?.session?.user?.email) {
-              sessionUserEmail = data.session.user.email;
-            }
-          } catch (e) {}
-        }
 
-        if (sessionUserEmail) {
-          onEnter(sessionUserEmail);
-        } else {
-          // If Supabase Auth did not return a session, fetch from Supabase database table
-          const existingProfile = await fetchUserProfile(cleanEmail);
-          if (existingProfile) {
-            onEnter(existingProfile.email);
-          } else {
-            // New user: register profile directly in Supabase backend
-            await saveUserProfile({
-              email: cleanEmail,
-              name: cleanEmail.split('@')[0],
-              dob: '',
-              phone: '',
-              schoolOffice: '',
-              position: '',
-              pan: '',
-              completedOnboarding: false,
-            });
+            if (error) {
+              throw error;
+            }
+
+            if (data?.session?.user?.email) {
+              onEnter(data.session.user.email);
+              return;
+            }
+
+            const existingProfile = await fetchUserProfile(cleanEmail);
+            if (!existingProfile) {
+              await saveUserProfile({
+                email: cleanEmail,
+                name: cleanEmail.split('@')[0],
+                dob: '',
+                phone: '',
+                schoolOffice: '',
+                position: '',
+                pan: '',
+                completedOnboarding: false,
+              });
+            }
+            setSuccessMsg('New account created. Please continue to complete setup.');
             onEnter(cleanEmail);
+            return;
           }
+
+          throw signInError;
         }
       }
+
+      const existingProfile = await fetchUserProfile(cleanEmail);
+      if (existingProfile) {
+        onEnter(existingProfile.email);
+      } else {
+        await saveUserProfile({
+          email: cleanEmail,
+          name: cleanEmail.split('@')[0],
+          dob: '',
+          phone: '',
+          schoolOffice: '',
+          position: '',
+          pan: '',
+          completedOnboarding: false,
+        });
+        onEnter(cleanEmail);
+      }
     } catch (err: any) {
-      onEnter(cleanEmail);
+      setErrorMsg(err?.message || 'Unable to sign in. Please check your credentials or create an account.');
     } finally {
       setLoading(false);
     }
