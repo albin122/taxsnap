@@ -88,21 +88,57 @@ export default function NavHeader({ activeTab, onTabChange, theme = 'dark' }: Na
       </div>
 
       <div className="w-full px-2 md:hidden">
-        <nav className="mx-auto flex w-full max-w-[430px] items-center gap-1.5 rounded-full border border-white/10 bg-[#1b2a2d]/85 px-1.5 py-1.5 shadow-[0_20px_45px_rgba(0,0,0,0.32)] backdrop-blur-xl">
-          <button
-            type="button"
-            onClick={() => onTabChange?.('overview')}
-            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border ${
-              activeTab === 'overview'
-                ? 'border-[#2dd4bf]/45 bg-[#2dd4bf]/10 text-white'
-                : 'border-transparent bg-transparent text-white/80'
-            }`}
-            aria-label="Home"
-          >
-            <img src="/logo.png" alt="" className="size-5 rounded-md object-contain" />
-          </button>
+        <div className="mx-auto max-w-[440px] space-y-3">
+          <div className="flex items-center justify-between rounded-full border border-white/10 bg-[#1a2329]/80 px-3 py-2.5 shadow-[0_12px_30px_rgba(0,0,0,0.25)] backdrop-blur-xl">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <button
+                type="button"
+                onClick={() => onTabChange?.('overview')}
+                className={`flex h-8 w-8 items-center justify-center rounded-full border ${
+                  activeTab === 'overview'
+                    ? 'border-[#2dd4bf]/50 bg-[#2dd4bf]/10 text-white'
+                    : 'border-white/10 bg-white/5 text-white/80'
+                }`}
+                aria-label="Home"
+              >
+                <img src="/logo.png" alt="TaxSnap" className="size-5 rounded-md object-contain" />
+              </button>
 
-          <div className="flex flex-1 items-center justify-center gap-1 overflow-hidden">
+              <div className="flex min-w-0 items-center gap-1.5 text-white/90">
+                <span className="text-sm font-medium text-white/90">-hazel.vercel.app</span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => onTabChange?.('overview')}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-lg font-medium text-white"
+                aria-label="Add"
+              >
+                +
+              </button>
+
+              <div className="flex h-7 min-w-7 items-center justify-center rounded-full border border-white/10 bg-white/5 px-2 text-[11px] font-semibold text-white">
+                17
+              </div>
+
+              <button
+                type="button"
+                onClick={() => onTabChange?.('profile')}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80"
+                aria-label="More options"
+              >
+                <svg viewBox="0 0 24 24" className="size-4 fill-current" aria-hidden="true">
+                  <circle cx="12" cy="5" r="1.5" />
+                  <circle cx="12" cy="12" r="1.5" />
+                  <circle cx="12" cy="19" r="1.5" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <nav className="flex items-center gap-1.5 rounded-full border border-white/10 bg-[#1b2a2d]/85 px-1.5 py-1.5 shadow-[0_18px_34px_rgba(0,0,0,0.26)] backdrop-blur-xl">
             {mobileTabs.map((tab) => {
               const isActive = activeTab === tab.id || (tab.id === 'profile' && activeTab === 'settings');
 
@@ -111,7 +147,7 @@ export default function NavHeader({ activeTab, onTabChange, theme = 'dark' }: Na
                   key={tab.id}
                   type="button"
                   onClick={() => onTabChange?.(tab.id === 'profile' ? 'profile' : tab.id)}
-                  className={`shrink-0 whitespace-nowrap rounded-full px-2 py-2 text-[10px] font-semibold tracking-tight transition-all ${
+                  className={`flex-1 rounded-full px-2 py-2 text-[10px] font-semibold tracking-tight transition-all ${
                     isActive
                       ? 'bg-white/10 text-white shadow-inner shadow-white/10'
                       : 'text-white/70 hover:text-white'
@@ -121,19 +157,8 @@ export default function NavHeader({ activeTab, onTabChange, theme = 'dark' }: Na
                 </button>
               );
             })}
-          </div>
-
-          <button
-            type="button"
-            onClick={() => onTabChange?.('profile')}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80"
-            aria-label="More"
-          >
-            <svg viewBox="0 0 24 24" className="size-4 fill-none stroke-current stroke-[2]" aria-hidden="true">
-              <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-            </svg>
-          </button>
-        </nav>
+          </nav>
+        </div>
       </div>
     </div>
   );
