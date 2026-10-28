@@ -87,19 +87,19 @@ export default function NavHeader({ activeTab, onTabChange, theme = 'dark' }: Na
         </div>
       </div>
 
-      <div className="w-full md:hidden">
-        <nav className="mx-auto flex w-full items-center gap-2 rounded-full border border-white/10 bg-[#1b2a2d]/80 px-2 py-2 shadow-[0_16px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+      <div className="w-full px-2 md:hidden">
+        <nav className="mx-auto flex w-full max-w-[430px] items-center gap-1.5 rounded-full border border-white/10 bg-[#1b2a2d]/85 px-1.5 py-1.5 shadow-[0_20px_45px_rgba(0,0,0,0.32)] backdrop-blur-xl">
           <button
             type="button"
             onClick={() => onTabChange?.('overview')}
-            className={`flex shrink-0 items-center justify-center rounded-full border px-2 py-2 ${
+            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border ${
               activeTab === 'overview'
-                ? 'border-[#2dd4bf]/50 bg-[#2dd4bf]/15 text-white'
+                ? 'border-[#2dd4bf]/45 bg-[#2dd4bf]/10 text-white'
                 : 'border-transparent bg-transparent text-white/80'
             }`}
             aria-label="Home"
           >
-            <img src="/logo.png" alt="" className="size-6 rounded-md object-contain" />
+            <img src="/logo.png" alt="" className="size-5 rounded-md object-contain" />
           </button>
 
           <div className="flex flex-1 items-center justify-center gap-1 overflow-hidden">
@@ -111,7 +111,7 @@ export default function NavHeader({ activeTab, onTabChange, theme = 'dark' }: Na
                   key={tab.id}
                   type="button"
                   onClick={() => onTabChange?.(tab.id === 'profile' ? 'profile' : tab.id)}
-                  className={`rounded-full px-2.5 py-2 text-[10px] font-semibold tracking-tight transition-all ${
+                  className={`shrink-0 whitespace-nowrap rounded-full px-2 py-2 text-[10px] font-semibold tracking-tight transition-all ${
                     isActive
                       ? 'bg-white/10 text-white shadow-inner shadow-white/10'
                       : 'text-white/70 hover:text-white'
@@ -126,11 +126,11 @@ export default function NavHeader({ activeTab, onTabChange, theme = 'dark' }: Na
           <button
             type="button"
             onClick={() => onTabChange?.('profile')}
-            className="flex shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 p-2 text-white/80"
-            aria-label="Settings"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80"
+            aria-label="More"
           >
             <svg viewBox="0 0 24 24" className="size-4 fill-none stroke-current stroke-[2]" aria-hidden="true">
-              <path d="M12 6v12M6 12h12" strokeLinecap="round"/>
+              <path d="M12 5v14M5 12h14" strokeLinecap="round" />
             </svg>
           </button>
         </nav>
