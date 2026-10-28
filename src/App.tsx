@@ -2145,67 +2145,71 @@ function Dashboard({
                 </div>
               </div>
 
-              {/* 4 Glass KPI Cards Grid */}
-              <div className="grid gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4">
-                <div className={`group rounded-3xl border p-6 shadow-xl transition-all ${
-                  isLight
-                    ? 'border-teal-200/60 bg-white/80 text-slate-900 hover:border-teal-400'
-                    : 'border-[#2dd4bf]/25 bg-[#091a17]/70 text-white hover:border-[#2dd4bf]/50'
-                }`}>
-                  <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-[#2dd4bf]/20 text-[#2dd4bf] border border-[#2dd4bf]/30">
-                    <TrendingUp className="size-6 text-teal-600" />
+              {/* 4 Card-Style KPI Cards Grid */}
+              <div className="feature-card-grid">
+                <article className="feature-card feature-card-teal">
+                  <div className="feature-card-align" aria-hidden="true">
+                    <span className="red" />
+                    <span className="yellow" />
+                    <span className="green" />
                   </div>
-                  <span className={`text-[0.65rem] font-bold uppercase tracking-wider block ${isLight ? 'text-teal-700' : 'text-teal-300'}`}>TY 2026–27 Slabs</span>
-                  <h3 className="font-bold text-lg mt-0.5">Tax-Free to ₹12.75L</h3>
-                  <p className={`mt-1 text-xs leading-relaxed ${isLight ? 'text-slate-600' : 'text-emerald-200/70'}`}>
-                    0% up to ₹4L · 5% up to ₹8L · 10% up to ₹12L (Rebated u/s 156)
-                  </p>
-                </div>
+                  <div className="feature-card-badge feature-card-badge-teal">
+                    <TrendingUp className="size-5" />
+                  </div>
+                  <div className="feature-card-copy">
+                    <span className="feature-card-label">TY 2026–27 Slabs</span>
+                    <h3>Tax-Free to ₹12.75L</h3>
+                    <p>0% up to ₹4L · 5% up to ₹8L · 10% up to ₹12L (Rebated u/s 156)</p>
+                  </div>
+                </article>
 
-                <div className={`group rounded-3xl border p-6 shadow-xl transition-all ${
-                  isLight
-                    ? 'border-teal-200/60 bg-white/80 text-slate-900 hover:border-teal-400'
-                    : 'border-[#2dd4bf]/25 bg-[#091a17]/70 text-white hover:border-[#2dd4bf]/50'
-                }`}>
-                  <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-600 border border-emerald-400/30">
-                    <ShieldCheck className="size-6" />
+                <article className="feature-card feature-card-emerald">
+                  <div className="feature-card-align" aria-hidden="true">
+                    <span className="red" />
+                    <span className="yellow" />
+                    <span className="green" />
                   </div>
-                  <span className="text-[0.65rem] font-bold uppercase tracking-wider text-emerald-600 block">Section 156 Relief</span>
-                  <h3 className="font-bold text-lg mt-0.5">Full Tax Rebate</h3>
-                  <p className={`mt-1 text-xs leading-relaxed ${isLight ? 'text-slate-600' : 'text-emerald-200/70'}`}>
-                    ₹60,000 maximum tax rebate for taxable income up to ₹12.00 Lakhs.
-                  </p>
-                </div>
+                  <div className="feature-card-badge feature-card-badge-emerald">
+                    <ShieldCheck className="size-5" />
+                  </div>
+                  <div className="feature-card-copy">
+                    <span className="feature-card-label">Section 156 Relief</span>
+                    <h3>Full Tax Rebate</h3>
+                    <p>₹60,000 maximum tax rebate for taxable income up to ₹12.00 Lakhs.</p>
+                  </div>
+                </article>
 
-                <div className={`group rounded-3xl border p-6 shadow-xl transition-all ${
-                  isLight
-                    ? 'border-teal-200/60 bg-white/80 text-slate-900 hover:border-teal-400'
-                    : 'border-[#2dd4bf]/25 bg-[#091a17]/70 text-white hover:border-[#2dd4bf]/50'
-                }`}>
-                  <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-amber-500/20 text-amber-600 border border-amber-400/30">
-                    <ClipboardList className="size-6" />
+                <article className="feature-card feature-card-amber">
+                  <div className="feature-card-align" aria-hidden="true">
+                    <span className="red" />
+                    <span className="yellow" />
+                    <span className="green" />
                   </div>
-                  <span className="text-[0.65rem] font-bold uppercase tracking-wider text-amber-600 block">Deduction 19(2)</span>
-                  <h3 className="font-bold text-lg mt-0.5">₹75,000 Flat Off</h3>
-                  <p className={`mt-1 text-xs leading-relaxed ${isLight ? 'text-slate-600' : 'text-emerald-200/70'}`}>
-                    Flat ₹75,000 standard deduction for salaried employees. ₹50,000 for pensioners.
-                  </p>
-                </div>
+                  <div className="feature-card-badge feature-card-badge-amber">
+                    <ClipboardList className="size-5" />
+                  </div>
+                  <div className="feature-card-copy">
+                    <span className="feature-card-label">Deduction 19(2)</span>
+                    <h3>₹75,000 Flat Off</h3>
+                    <p>Flat ₹75,000 standard deduction for salaried employees. ₹50,000 for pensioners.</p>
+                  </div>
+                </article>
 
-                <div className={`group rounded-3xl border p-6 shadow-xl transition-all ${
-                  isLight
-                    ? 'border-teal-200/60 bg-white/80 text-slate-900 hover:border-teal-400'
-                    : 'border-[#2dd4bf]/25 bg-[#091a17]/70 text-white hover:border-[#2dd4bf]/50'
-                }`}>
-                  <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-teal-500/20 text-teal-600 border border-teal-400/30">
-                    <ReceiptText className="size-6" />
+                <article className="feature-card feature-card-cyan">
+                  <div className="feature-card-align" aria-hidden="true">
+                    <span className="red" />
+                    <span className="yellow" />
+                    <span className="green" />
                   </div>
-                  <span className="text-[0.65rem] font-bold uppercase tracking-wider text-teal-600 block">Statutory Exemptions</span>
-                  <h3 className="font-bold text-lg mt-0.5">Retirement Tax-Free</h3>
-                  <p className={`mt-1 text-xs leading-relaxed ${isLight ? 'text-slate-600' : 'text-emerald-200/70'}`}>
-                    DCRG u/s 19(3) &amp; Commutation u/s 19(7) remain 100% tax-free under New Regime.
-                  </p>
-                </div>
+                  <div className="feature-card-badge feature-card-badge-cyan">
+                    <ReceiptText className="size-5" />
+                  </div>
+                  <div className="feature-card-copy">
+                    <span className="feature-card-label">Statutory Exemptions</span>
+                    <h3>Retirement Tax-Free</h3>
+                    <p>DCRG u/s 19(3) &amp; Commutation u/s 19(7) remain 100% tax-free under New Regime.</p>
+                  </div>
+                </article>
               </div>
 
               {/* Rearranged 2-Column Content Grid */}
@@ -2939,48 +2943,54 @@ function Dashboard({
                         title: 'Up to ₹4,00,000',
                         subtitle: 'Tax-free',
                         label: '0%',
-                        accent: '#ba7af3',
+                        accent: '#00ffd6',
                         pattern: 'wave',
+                        salaryDetails: '₹0 – ₹4L',
                         icon: <BadgeCheck className="size-4" />,
                       },
                       {
                         title: '₹4,00,001 – ₹8,00,000',
                         subtitle: 'Standard band',
                         label: '5%',
-                        accent: '#54c8ff',
+                        accent: '#2ad4ff',
                         pattern: 'dots',
+                        salaryDetails: '₹4L – ₹8L',
                         icon: <ShieldCheck className="size-4" />,
                       },
                       {
                         title: '₹8,00,001 – ₹12,00,000',
                         subtitle: 'Rebate tier',
                         label: '10%',
-                        accent: '#f9d34a',
+                        accent: '#ffd73c',
                         pattern: 'zigzag',
+                        salaryDetails: '₹8L – ₹12L',
                         icon: <Wallet className="size-4" />,
                       },
                       {
                         title: '₹12,00,001 – ₹16,00,000',
                         subtitle: 'Marginal relief',
                         label: '15%',
-                        accent: '#f0bb00',
+                        accent: '#f0bc00',
                         pattern: 'stripe',
+                        salaryDetails: '₹12L – ₹16L',
                         icon: <Coins className="size-4" />,
                       },
                       {
                         title: '₹16,00,001 – ₹20,00,000',
                         subtitle: 'Higher bracket',
                         label: '20%',
-                        accent: '#ff5d5d',
+                        accent: '#ff6a6a',
                         pattern: 'spark',
+                        salaryDetails: '₹16L – ₹20L',
                         icon: <FileText className="size-4" />,
                       },
                       {
                         title: 'Above ₹24,00,000',
                         subtitle: 'Top slab',
                         label: '30%',
-                        accent: '#32d17d',
+                        accent: '#67e997',
                         pattern: 'orb',
+                        salaryDetails: 'Above ₹24L',
                         icon: <BadgeCheck className="size-4" />,
                       },
                     ]}

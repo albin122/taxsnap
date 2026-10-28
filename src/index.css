@@ -160,6 +160,182 @@ select {
   padding-top: env(safe-area-inset-top, 0px);
 }
 
+.feature-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+.feature-card {
+  position: relative;
+  width: 100%;
+  min-height: 180px;
+  padding: 0.5rem;
+  background: rgba(198, 198, 198, 0.14);
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+  border-bottom: 3px solid rgba(255, 255, 255, 0.44);
+  border-left: 2px solid rgba(255, 255, 255, 0.54);
+  box-shadow: -40px 50px 30px rgba(0, 0, 0, 0.28);
+  transform: skewX(10deg);
+  transition: 0.4s ease-in-out;
+  overflow: hidden;
+  color: white;
+}
+
+.feature-card:hover {
+  transform: skew(0deg);
+  min-height: 220px;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0));
+  pointer-events: none;
+}
+
+.feature-card-align {
+  position: relative;
+  z-index: 2;
+  padding: 0.8rem 0.85rem 0.2rem;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-self: flex-start;
+}
+
+.red,
+.yellow,
+.green {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.28);
+}
+
+.red {
+  background-color: #ff605c;
+}
+
+.yellow {
+  background-color: #ffbd44;
+}
+
+.green {
+  background-color: #00ca4e;
+}
+
+.feature-card-badge {
+  position: relative;
+  z-index: 2;
+  width: 42px;
+  height: 42px;
+  margin: 0.6rem 0 0.8rem 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.28);
+}
+
+.feature-card-badge-teal {
+  background: rgba(45, 212, 191, 0.18);
+  color: #dffdf8;
+}
+
+.feature-card-badge-emerald {
+  background: rgba(16, 185, 129, 0.18);
+  color: #dffdf0;
+}
+
+.feature-card-badge-amber {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fff4d3;
+}
+
+.feature-card-badge-cyan {
+  background: rgba(34, 211, 238, 0.15);
+  color: #dffcff;
+}
+
+.feature-card-copy {
+  position: relative;
+  z-index: 2;
+  padding: 0 0.7rem 0.8rem;
+}
+
+.feature-card-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.9;
+  margin-bottom: 0.45rem;
+}
+
+.feature-card h3 {
+  margin: 0;
+  font-size: clamp(1.15rem, 1.8vw, 1.7rem);
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+  color: rgb(218, 244, 237);
+  text-shadow: -10px 5px 10px rgba(0, 0, 0, 0.573);
+}
+
+.feature-card p {
+  margin: 0.55rem 0 0;
+  color: rgba(222, 255, 245, 0.82);
+  font-size: 0.74rem;
+  line-height: 1.55;
+}
+
+.feature-card-teal {
+  background: linear-gradient(135deg, rgba(12, 74, 71, 0.9), rgba(13, 59, 57, 0.92));
+}
+
+.feature-card-emerald {
+  background: linear-gradient(135deg, rgba(9, 68, 55, 0.9), rgba(9, 57, 48, 0.94));
+}
+
+.feature-card-amber {
+  background: linear-gradient(135deg, rgba(77, 58, 22, 0.8), rgba(52, 45, 18, 0.92));
+}
+
+.feature-card-cyan {
+  background: linear-gradient(135deg, rgba(9, 72, 73, 0.9), rgba(10, 61, 60, 0.94));
+}
+
+.feature-card-teal .feature-card-label,
+.feature-card-emerald .feature-card-label,
+.feature-card-cyan .feature-card-label {
+  color: #d8fff5;
+}
+
+.feature-card-amber .feature-card-label {
+  color: #ffefbf;
+}
+
+@media (max-width: 980px) {
+  .feature-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .feature-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card {
+    min-height: 170px;
+  }
+}
+
 /* Smooth momentum scrolling inside scroll containers on iOS */
 .overflow-y-auto,
 .overflow-x-auto,

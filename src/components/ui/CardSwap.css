@@ -1,151 +1,173 @@
 .tax-card-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.4rem;
+  gap: 1.8rem 1.5rem;
   width: 100%;
 }
 
-.tax-card {
-  position: relative;
-  min-height: 370px;
-  border-radius: 22px;
-  background: rgba(12, 17, 20, 0.9);
-  border: 1px solid rgba(158, 166, 179, 0.18);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
-  overflow: hidden;
-}
-
-.tax-card-shell {
-  position: relative;
+.tax-slab-item {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  padding: 1.2rem 1.1rem 0.95rem;
-  background: linear-gradient(180deg, rgba(22, 27, 31, 0.96), rgba(17, 20, 24, 0.96));
+  gap: 0.7rem;
+  min-height: 420px;
 }
 
-.tax-card-topbar {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+.tax-slab-range {
+  font-size: clamp(1.1rem, 1.5vw, 1.8rem);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+  padding-left: 0.15rem;
+}
+
+.tax-slab-card {
+  position: relative;
+  width: 100%;
+  max-width: 290px;
+  height: 300px;
+  margin: 0 auto;
+  perspective: 1000px;
+  border-radius: 50px;
+  background: linear-gradient(135deg, var(--accent) 0%, rgba(8, 226, 96, 1) 100%);
+  transition: all 0.5s ease-in-out;
+  transform-style: preserve-3d;
+  box-shadow: rgba(5, 71, 17, 0) 40px 50px 25px -40px, rgba(5, 71, 17, 0.2) 0px 25px 25px -5px;
+  overflow: hidden;
+}
+
+.glass {
+  transform-style: preserve-3d;
+  position: absolute;
+  inset: 8px;
+  border-radius: 55px;
+  border-top-right-radius: 100%;
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.349) 0%, rgba(255, 255, 255, 0.815) 100%);
+  transform: translate3d(0, 0, 26px);
+  border-left: 1px solid rgba(255,255,255,0.9);
+  border-bottom: 1px solid rgba(255,255,255,0.9);
+  transition: all 0.5s ease-in-out;
+}
+
+.content {
   position: relative;
   z-index: 2;
+  padding: 84px 42px 0 28px;
+  transform: translate3d(0, 0, 26px);
 }
 
-.tax-card-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #111827;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-.tax-card-copy {
-  position: relative;
-  z-index: 2;
-  margin-top: 0.9rem;
-  margin-bottom: auto;
-}
-
-.tax-card-rate {
-  display: inline-block;
-  margin-bottom: 0.2rem;
-  font-size: clamp(2.2rem, 3vw, 3.4rem);
+.content .title {
+  display: block;
+  color: #00894d;
+  font-weight: 900;
+  font-size: clamp(2rem, 3vw, 3.2rem);
   line-height: 0.9;
   letter-spacing: -0.08em;
-  font-weight: 800;
-  color: var(--accent);
 }
 
-.tax-card-copy h3 {
-  margin: 0.35rem 0 0.15rem;
-  font-size: clamp(1.3rem, 1.8vw, 2.2rem);
-  line-height: 1.05;
-  letter-spacing: -0.06em;
-  font-weight: 800;
-  color: #f5f7fb;
+.content .text {
+  display: block;
+  color: rgba(0, 137, 78, 0.76);
+  font-size: 0.95rem;
+  margin-top: 0.8rem;
 }
 
-.tax-card-copy p {
-  margin: 0;
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.7);
-}
-
-.tax-card-art {
-  position: relative;
-  z-index: 1;
-  height: 150px;
-  margin-top: 1rem;
-  border-radius: 14px 14px 0 0;
-  overflow: hidden;
-  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0));
-}
-
-.tax-card-art--wave {
-  background:
-    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.06) 0 2px, transparent 2px),
-    linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0));
-}
-
-.tax-card-art--wave::before,
-.tax-card-art--wave::after,
-.tax-card-art--dots::before,
-.tax-card-art--dots::after,
-.tax-card-art--zigzag::before,
-.tax-card-art--zigzag::after,
-.tax-card-art--stripe::before,
-.tax-card-art--stripe::after,
-.tax-card-art--spark::before,
-.tax-card-art--spark::after,
-.tax-card-art--orb::before,
-.tax-card-art--orb::after {
-  content: '';
+.bottom {
   position: absolute;
-  inset: 0;
+  left: 20px;
+  right: 20px;
+  bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  transform: translate3d(0, 0, 26px);
+  z-index: 3;
 }
 
-.tax-card-art--wave::before {
-  background:
-    repeating-radial-gradient(circle at 15% 120%, rgba(187, 134, 255, 0.9) 0 1.7px, transparent 1.8px 10px),
-    repeating-radial-gradient(circle at 40% 130%, rgba(92, 173, 255, 0.9) 0 1.5px, transparent 1.6px 9px),
-    repeating-radial-gradient(circle at 75% 120%, rgba(255, 192, 87, 0.9) 0 1.7px, transparent 1.8px 10px);
-  mask: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.9) 30%, rgba(0,0,0,1) 100%);
+.salary-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  color: #0d6a49;
 }
 
-.tax-card-art--dots::before {
-  background: radial-gradient(circle, rgba(31, 222, 150, 0.96) 0 18%, transparent 18.5% 100%);
-  background-size: 28px 28px;
-  background-position: center;
-  filter: drop-shadow(0 0 12px rgba(31, 222, 150, 0.35));
+.salary-value {
+  font-weight: 800;
+  font-size: 0.92rem;
+  letter-spacing: -0.04em;
 }
 
-.tax-card-art--zigzag::before {
-  background: repeating-linear-gradient(
-    135deg,
-    rgba(255, 199, 27, 0.98) 0 8px,
-    rgba(255, 199, 27, 0.98) 8px 15px,
-    rgba(0,0,0,0) 15px 23px,
-    rgba(0,0,0,0) 23px 31px
-  );
-  transform: skewY(-6deg);
+.logo {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform-style: preserve-3d;
 }
 
-.tax-card-art--stripe::before {
-  background: repeating-linear-gradient(135deg, rgba(255, 196, 0, 0.9) 0 12px, rgba(0,0,0,0) 12px 28px);
+.logo .circle {
+  display: block;
+  position: absolute;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  top: 0;
+  right: 0;
+  box-shadow: rgba(100, 100, 111, 0.2) -10px 10px 20px 0px;
+  background: rgba(0, 249, 203, 0.2);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  transition: all 0.5s ease-in-out;
 }
 
-.tax-card-art--spark::before {
-  background: repeating-linear-gradient(45deg, rgba(255, 84, 84, 0.9) 0 2px, transparent 2px 14px);
-  mask: radial-gradient(circle at center, rgba(0,0,0,1) 0 35%, transparent 36% 100%);
+.logo .circle1 {
+  width: 170px;
+  transform: translate3d(0, 0, 20px);
+  top: 8px;
+  right: 8px;
 }
 
-.tax-card-art--orb::before {
-  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15) 0 12%, rgba(160, 244, 195, 0.9) 12% 16%, rgba(0,0,0,0) 16.5% 100%);
-  background-size: 30px 30px;
+.logo .circle2 {
+  width: 140px;
+  transform: translate3d(0, 0, 40px);
+  top: 10px;
+  right: 10px;
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+  transition-delay: 0.4s;
+}
+
+.logo .circle3 {
+  width: 110px;
+  transform: translate3d(0, 0, 60px);
+  top: 17px;
+  right: 17px;
+  transition-delay: 0.8s;
+}
+
+.logo .circle4 {
+  width: 80px;
+  transform: translate3d(0, 0, 80px);
+  top: 23px;
+  right: 23px;
+  transition-delay: 1.2s;
+}
+
+.tax-slab-card:hover {
+  transform: rotate3d(1, 1, 0, 30deg);
+  box-shadow: rgba(5, 71, 17, 0.3) 30px 50px 25px -40px, rgba(5, 71, 17, 0.1) 0px 25px 30px 0px;
+}
+
+.tax-slab-card:hover .logo .circle2 {
+  transform: translate3d(0, 0, 60px);
+}
+
+.tax-slab-card:hover .logo .circle3 {
+  transform: translate3d(0, 0, 80px);
+}
+
+.tax-slab-card:hover .logo .circle4 {
+  transform: translate3d(0, 0, 100px);
 }
 
 @media (max-width: 980px) {
@@ -160,15 +182,12 @@
     gap: 1rem;
   }
 
-  .tax-card {
-    min-height: 270px;
+  .tax-slab-item {
+    min-height: 340px;
   }
 
-  .tax-card-shell {
-    padding: 0.9rem 0.85rem 0.8rem;
-  }
-
-  .tax-card-copy h3 {
-    font-size: 1.55rem;
+  .tax-slab-card {
+    max-width: 260px;
+    height: 270px;
   }
 }
