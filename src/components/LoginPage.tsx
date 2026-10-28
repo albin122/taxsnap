@@ -106,38 +106,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, onBackToHo
         const { data, error } = await signInWithEmail(cleanEmail, password);
 
         if (error) {
-          const isNewUser = /invalid login credentials|user not found|email not confirmed/i.test(error.message || '');
-          if (!isNewUser) {
-            throw error;
-          }
-
-          const { data: signupData, error: signupError } = await signUpWithEmail(cleanEmail, password);
-          if (signupError) {
-            throw signupError;
-          }
-
-          if (signupData?.session?.user?.email) {
-            onLoginSuccess(signupData.session.user.email);
-            return;
-          }
-
-          const existingProfile = await fetchUserProfile(cleanEmail);
-          if (existingProfile) {
-            onLoginSuccess(existingProfile.email);
-            return;
-          }
-
-          await saveUserProfile({
-            email: cleanEmail,
-            name: cleanEmail.split('@')[0],
-            dob: '',
-            phone: '',
-            schoolOffice: '',
-            position: '',
-            pan: '',
-            completedOnboarding: false,
-          });
-          onLoginSuccess(cleanEmail);
+          const message = error.message || 'Incorrect email or password.';
+          setErrorMessage(message.includes('invalid login credentials') || message.includes('user not found')
+            ? 'Incorrect email or password. Please try again or create a new account.'
+            : message);
           return;
         }
 
@@ -152,20 +124,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, onBackToHo
           return;
         }
 
-        await saveUserProfile({
-          email: cleanEmail,
-          name: cleanEmail.split('@')[0],
-          dob: '',
-          phone: '',
-          schoolOffice: '',
-          position: '',
-          pan: '',
-          completedOnboarding: false,
-        });
-        onLoginSuccess(cleanEmail);
+        setErrorMessage('No matching account found. Please sign up first.');
       }
     } catch (err: any) {
-      setErrorMessage(err?.message || 'Unable to sign in. Please check your credentials or create a new account.');
+      setErrorMessage(err?.message || 'Unable to sign in. Please check your credentials and try again.');
     } finally {
       setLoading(false);
     }

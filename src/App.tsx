@@ -1544,44 +1544,13 @@ function Login({
             return;
           }
         } catch (signInError: any) {
-          const isUserNotFound = /invalid login credentials|user not found|email not confirmed/i.test(signInError?.message || '');
-          if (isUserNotFound) {
-            const { data, error } = await supabase.auth.signUp({
-              email: cleanEmail,
-              password,
-              options: {
-                data: { full_name: cleanEmail.split('@')[0] },
-              },
-            });
-
-            if (error) {
-              throw error;
-            }
-
-            if (data?.session?.user?.email) {
-              onEnter(data.session.user.email);
-              return;
-            }
-
-            const existingProfile = await fetchUserProfile(cleanEmail);
-            if (!existingProfile) {
-              await saveUserProfile({
-                email: cleanEmail,
-                name: cleanEmail.split('@')[0],
-                dob: '',
-                phone: '',
-                schoolOffice: '',
-                position: '',
-                pan: '',
-                completedOnboarding: false,
-              });
-            }
-            setSuccessMsg('New account created. Please continue to complete setup.');
-            onEnter(cleanEmail);
-            return;
-          }
-
-          throw signInError;
+          const message = signInError?.message || 'Incorrect email or password.';
+          setErrorMsg(
+            message.includes('invalid login credentials') || message.includes('user not found')
+              ? 'Incorrect email or password. Please try again or create a new account.'
+              : message
+          );
+          return;
         }
       }
 
@@ -1589,20 +1558,10 @@ function Login({
       if (existingProfile) {
         onEnter(existingProfile.email);
       } else {
-        await saveUserProfile({
-          email: cleanEmail,
-          name: cleanEmail.split('@')[0],
-          dob: '',
-          phone: '',
-          schoolOffice: '',
-          position: '',
-          pan: '',
-          completedOnboarding: false,
-        });
-        onEnter(cleanEmail);
+        setErrorMsg('No account found for this email. Please sign up first.');
       }
     } catch (err: any) {
-      setErrorMsg(err?.message || 'Unable to sign in. Please check your credentials or create an account.');
+      setErrorMsg(err?.message || 'Unable to sign in. Please check your credentials and try again.');
     } finally {
       setLoading(false);
     }
