@@ -9,7 +9,6 @@ import {
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 
-import Dock from './Dock';
 import PillNav from './PillNav';
 import type { PillNavItem } from './PillNav';
 
@@ -41,37 +40,12 @@ const hrefToTabId = (href: string): string => href.replace('#', '');
 export default function NavHeader({ activeTab, onTabChange, theme = 'dark' }: NavHeaderProps) {
   const isLight = theme === 'light';
 
-  const mobileItems = [
-    {
-      label: 'Home',
-      icon: glyph(Home01Icon),
-      active: activeTab === 'overview',
-      onClick: () => onTabChange?.('overview')
-    },
-    {
-      label: 'Tax Slabs',
-      icon: glyph(InvoiceIcon),
-      active: activeTab === 'slabs',
-      onClick: () => onTabChange?.('slabs')
-    },
-    {
-      label: 'Exemptions',
-      icon: glyph(ShieldCheckIcon),
-      active: activeTab === 'rules',
-      onClick: () => onTabChange?.('rules')
-    },
-    {
-      label: 'Contact',
-      icon: glyph(PhoneCallIcon),
-      active: activeTab === 'contact',
-      onClick: () => onTabChange?.('contact')
-    },
-    {
-      label: 'Settings',
-      icon: glyph(Settings01Icon),
-      active: activeTab === 'profile' || activeTab === 'settings',
-      onClick: () => onTabChange?.('profile')
-    }
+  const mobileTabs = [
+    { id: 'overview', label: 'Home' },
+    { id: 'slabs', label: 'Tax Slabs' },
+    { id: 'rules', label: 'Exemptions' },
+    { id: 'contact', label: 'Contact' },
+    { id: 'profile', label: 'Settings' },
   ];
 
   return (
@@ -124,26 +98,53 @@ export default function NavHeader({ activeTab, onTabChange, theme = 'dark' }: Na
         </div>
       </div>
 
-      <div
-        className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-3 pb-[calc(env(safe-area-inset-bottom)+0.65rem)] md:hidden"
-        style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 0.65rem)' }}
-      >
-        <div className="pointer-events-auto w-full max-w-[420px]">
-          <Dock
-            items={mobileItems}
-            theme={isLight ? 'light' : 'dark'}
-            baseItemSize={52}
-            magnification={76}
-            panelHeight={64}
-            gap={10}
-            roundness={0.5}
-            tiles
-            showLabels
-            showIndicators
-            position="bottom"
-            autoHide={false}
-          />
-        </div>
+      <div className="w-full md:hidden">
+        <nav className="mx-auto flex w-full items-center gap-2 rounded-full border border-white/10 bg-[#1b2a2d]/80 px-2 py-2 shadow-[0_16px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+          <button
+            type="button"
+            onClick={() => onTabChange?.('overview')}
+            className={`flex shrink-0 items-center justify-center rounded-full border px-2 py-2 ${
+              activeTab === 'overview'
+                ? 'border-[#2dd4bf]/50 bg-[#2dd4bf]/15 text-white'
+                : 'border-transparent bg-transparent text-white/80'
+            }`}
+            aria-label="Home"
+          >
+            <img src="/logo.png" alt="" className="size-6 rounded-md object-contain" />
+          </button>
+
+          <div className="flex flex-1 items-center justify-center gap-1 overflow-hidden">
+            {mobileTabs.map((tab) => {
+              const isActive = activeTab === tab.id || (tab.id === 'profile' && activeTab === 'settings');
+
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => onTabChange?.(tab.id === 'profile' ? 'profile' : tab.id)}
+                  className={`rounded-full px-2.5 py-2 text-[10px] font-semibold tracking-tight transition-all ${
+                    isActive
+                      ? 'bg-white/10 text-white shadow-inner shadow-white/10'
+                      : 'text-white/70 hover:text-white'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => onTabChange?.('profile')}
+            className="flex shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 p-2 text-white/80"
+            aria-label="Settings"
+          >
+            <svg viewBox="0 0 24 24" className="size-4 fill-none stroke-current stroke-[2]" aria-hidden="true">
+              <path d="M12 6v12M6 12h12" strokeLinecap="round"/>
+            </svg>
+          </button>
+        </nav>
       </div>
     </div>
   );
